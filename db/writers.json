@@ -1,0 +1,984 @@
+[{
+	"_id": "nm0000005",
+	"name": "Ingmar Bergman",
+	"movie_ids": [
+		"tt0060827"
+	]
+},
+{
+	"_id": "nm0000040",
+	"name": "Stanley Kubrick",
+	"movie_ids": [
+		"tt0081505",
+		"tt0093058"
+	]
+},
+{
+	"_id": "nm0000041",
+	"name": "Akira Kurosawa",
+	"movie_ids": [
+		"tt0089881"
+	]
+},
+{
+	"_id": "nm0000080",
+	"name": "Orson Welles",
+	"movie_ids": [
+		"tt0033467"
+	]
+},
+{
+	"_id": "nm0000095",
+	"name": "Woody Allen",
+	"movie_ids": [
+		"tt0075686"
+	]
+},
+{
+	"_id": "nm0000116",
+	"name": "James Cameron",
+	"movie_ids": [
+		"tt0088247"
+	]
+},
+{
+	"_id": "nm0000122",
+	"name": "Charles Chaplin",
+	"movie_ids": [
+		"tt0015864"
+	]
+},
+{
+	"_id": "nm0000175",
+	"name": "Stephen King",
+	"movie_ids": [
+		"tt0120689",
+		"tt0081505",
+		"tt0111161"
+	]
+},
+{
+	"_id": "nm0000230",
+	"name": "Sylvester Stallone",
+	"movie_ids": [
+		"tt0075148"
+	]
+},
+{
+	"_id": "nm0000231",
+	"name": "Oliver Stone",
+	"movie_ids": [
+		"tt0086250",
+		"tt0091763"
+	]
+},
+{
+	"_id": "nm0000233",
+	"name": "Quentin Tarantino",
+	"movie_ids": [
+		"tt1853728",
+		"tt0105236",
+		"tt0110912"
+	]
+},
+{
+	"_id": "nm0000255",
+	"name": "Ben Affleck",
+	"movie_ids": [
+		"tt0119217"
+	]
+},
+{
+	"_id": "nm0000338",
+	"name": "Francis Ford Coppola",
+	"movie_ids": [
+		"tt0078788"
+	]
+},
+{
+	"_id": "nm0000341",
+	"name": "Michael Crichton",
+	"movie_ids": [
+		"tt0107290"
+	]
+},
+{
+	"_id": "nm0000354",
+	"name": "Matt Damon",
+	"movie_ids": [
+		"tt0119217"
+	]
+},
+{
+	"_id": "nm0000500",
+	"name": "Richard Linklater",
+	"movie_ids": [
+		"tt0112471"
+	]
+},
+{
+	"_id": "nm0000520",
+	"name": "Michael Mann",
+	"movie_ids": [
+		"tt0113277"
+	]
+},
+{
+	"_id": "nm0000697",
+	"name": "Billy Wilder",
+	"movie_ids": [
+		"tt0036775"
+	]
+},
+{
+	"_id": "nm0000709",
+	"name": "Robert Zemeckis",
+	"movie_ids": [
+		"tt0088763"
+	]
+},
+{
+	"_id": "nm0000759",
+	"name": "Paul Thomas Anderson",
+	"movie_ids": [
+		"tt0469494"
+	]
+},
+{
+	"_id": "nm0000812",
+	"name": "Roger Avary",
+	"movie_ids": [
+		"tt0105236",
+		"tt0110912"
+	]
+},
+{
+	"_id": "nm0000905",
+	"name": "Roberto Benigni",
+	"movie_ids": [
+		"tt0118799"
+	]
+},
+{
+	"_id": "nm0001047",
+	"name": "Michael Cimino",
+	"movie_ids": [
+		"tt0077416"
+	]
+},
+{
+	"_id": "nm0001053",
+	"name": "Ethan Coen",
+	"movie_ids": [
+		"tt0118715",
+		"tt0477348"
+	]
+},
+{
+	"_id": "nm0001054",
+	"name": "Joel Coen",
+	"movie_ids": [
+		"tt0118715",
+		"tt0477348"
+	]
+},
+{
+	"_id": "nm0001081",
+	"name": "Cameron Crowe",
+	"movie_ids": [
+		"tt1243974"
+	]
+},
+{
+	"_id": "nm0001104",
+	"name": "Frank Darabont",
+	"movie_ids": [
+		"tt0120689",
+		"tt0111161"
+	]
+},
+{
+	"_id": "nm0001279",
+	"name": "William Goldman",
+	"movie_ids": [
+		"tt0093779"
+	]
+},
+{
+	"_id": "nm0001707",
+	"name": "Paul Schrader",
+	"movie_ids": [
+		"tt0075314"
+	]
+},
+{
+	"_id": "nm0001801",
+	"name": "Robert Towne",
+	"movie_ids": [
+		"tt0071315"
+	]
+},
+{
+	"_id": "nm0001825",
+	"name": "Andrew Kevin Walker",
+	"movie_ids": [
+		"tt0114369"
+	]
+},
+{
+	"_id": "nm0001940",
+	"name": "Peter Benchley",
+	"movie_ids": [
+		"tt0073195"
+	]
+},
+{
+	"_id": "nm0003160",
+	"name": "Christopher McQuarrie",
+	"movie_ids": [
+		"tt0114814"
+	]
+},
+{
+	"_id": "nm0004056",
+	"name": "Andrew Stanton",
+	"movie_ids": [
+		"tt0266543"
+	]
+},
+{
+	"_id": "nm0004122",
+	"name": "Robert Bolt",
+	"movie_ids": [
+		"tt0056172"
+	]
+},
+{
+	"_id": "nm0004170",
+	"name": "Bob Kane",
+	"movie_ids": [
+		"tt0372784"
+	]
+},
+{
+	"_id": "nm0005036",
+	"name": "Gale Anne Hurd",
+	"movie_ids": [
+		"tt0088247"
+	]
+},
+{
+	"_id": "nm0005124",
+	"name": "John Lasseter",
+	"movie_ids": [
+		"tt0114709"
+	]
+},
+{
+	"_id": "nm0006904",
+	"name": "Tony Gilroy",
+	"movie_ids": [
+		"tt0440963"
+	]
+},
+{
+	"_id": "nm0027572",
+	"name": "Wes Anderson",
+	"movie_ids": [
+		"tt2278388"
+	]
+},
+{
+	"_id": "nm0050332",
+	"name": "Alan Ball",
+	"movie_ids": [
+		"tt0169547"
+	]
+},
+{
+	"_id": "nm0067789",
+	"name": "Jordan Belfort",
+	"movie_ids": [
+		"tt0993846"
+	]
+},
+{
+	"_id": "nm0088645",
+	"name": "Robert Bloch",
+	"movie_ids": [
+		"tt0054215"
+	]
+},
+{
+	"_id": "nm0092267",
+	"name": "Pierre Boileau",
+	"movie_ids": [
+		"tt0046911"
+	]
+},
+{
+	"_id": "nm0092268",
+	"name": "Thomas Narcejac",
+	"movie_ids": [
+		"tt0046911"
+	]
+},
+{
+	"_id": "nm0108595",
+	"name": "Paul Brickhill",
+	"movie_ids": [
+		"tt0057115"
+	]
+},
+{
+	"_id": "nm0108613",
+	"name": "Marshall Brickman",
+	"movie_ids": [
+		"tt0075686"
+	]
+},
+{
+	"_id": "nm0109300",
+	"name": "John Briley",
+	"movie_ids": [
+		"tt0083987"
+	]
+},
+{
+	"_id": "nm0141734",
+	"name": "Joseph Carter",
+	"movie_ids": [
+		"tt0081398"
+	]
+},
+{
+	"_id": "nm0148437",
+	"name": "Vincenzo Cerami",
+	"movie_ids": [
+		"tt0118799"
+	]
+},
+{
+	"_id": "nm0151452",
+	"name": "Raymond Chandler",
+	"movie_ids": [
+		"tt0036775"
+	]
+},
+{
+	"_id": "nm0154665",
+	"name": "Paddy Chayefsky",
+	"movie_ids": [
+		"tt0074958"
+	]
+},
+{
+	"_id": "nm0165412",
+	"name": "James Clavell",
+	"movie_ids": [
+		"tt0057115"
+	]
+},
+{
+	"_id": "nm0178785",
+	"name": "Alec Coppel",
+	"movie_ids": [
+		"tt0052357"
+	]
+},
+{
+	"_id": "nm0185976",
+	"name": "Peter Craig",
+	"movie_ids": [
+		"tt1951266"
+	]
+},
+{
+	"_id": "nm0215455",
+	"name": "Ronnie Del Carmen",
+	"movie_ids": [
+		"tt2096673"
+	]
+},
+{
+	"_id": "nm0230032",
+	"name": "Pete Docter",
+	"movie_ids": [
+		"tt2096673",
+		"tt0114709",
+		"tt1049413"
+	]
+},
+{
+	"_id": "nm0251536",
+	"name": "Bernd Eichinger",
+	"movie_ids": [
+		"tt0363163"
+	]
+},
+{
+	"_id": "nm0258493",
+	"name": "Julius J. Epstein",
+	"movie_ids": [
+		"tt0034583"
+	]
+},
+{
+	"_id": "nm0258525",
+	"name": "Philip G. Epstein",
+	"movie_ids": [
+		"tt0034583"
+	]
+},
+{
+	"_id": "nm0266684",
+	"name": "Hampton Fancher",
+	"movie_ids": [
+		"tt0083658"
+	]
+},
+{
+	"_id": "nm0275264",
+	"name": "Joachim Fest",
+	"movie_ids": [
+		"tt0363163"
+	]
+},
+{
+	"_id": "nm0285210",
+	"name": "Horton Foote",
+	"movie_ids": [
+		"tt0056592"
+	]
+},
+{
+	"_id": "nm0291905",
+	"name": "David Franzoni",
+	"movie_ids": [
+		"tt0172495"
+	]
+},
+{
+	"_id": "nm0301826",
+	"name": "Bob Gale",
+	"movie_ids": [
+		"tt0088763"
+	]
+},
+{
+	"_id": "nm0326040",
+	"name": "Akiva Goldsman",
+	"movie_ids": [
+		"tt0268978"
+	]
+},
+{
+	"_id": "nm0331956",
+	"name": "Carl Gottlieb",
+	"movie_ids": [
+		"tt0073195"
+	]
+},
+{
+	"_id": "nm0333060",
+	"name": "David S. Goyer",
+	"movie_ids": [
+		"tt0372784"
+	]
+},
+{
+	"_id": "nm0343165",
+	"name": "Winston Groom",
+	"movie_ids": [
+		"tt0109830"
+	]
+},
+{
+	"_id": "nm0365383",
+	"name": "Thomas Harris",
+	"movie_ids": [
+		"tt0102926"
+	]
+},
+{
+	"_id": "nm0367838",
+	"name": "Ronald Harwood",
+	"movie_ids": [
+		"tt0253474"
+	]
+},
+{
+	"_id": "nm0368007",
+	"name": "Gustav Hasford",
+	"movie_ids": [
+		"tt0093058"
+	]
+},
+{
+	"_id": "nm0386246",
+	"name": "Rajkumar Hirani",
+	"movie_ids": [
+		"tt1187043"
+	]
+},
+{
+	"_id": "nm0388076",
+	"name": "John Hodge",
+	"movie_ids": [
+		"tt0117951"
+	]
+},
+{
+	"_id": "nm0430785",
+	"name": "Abhijat Joshi",
+	"movie_ids": [
+		"tt1187043"
+	]
+},
+{
+	"_id": "nm0436164",
+	"name": "Laeta Kalogridis",
+	"movie_ids": [
+		"tt1130884"
+	]
+},
+{
+	"_id": "nm0446819",
+	"name": "Richard Kelly",
+	"movie_ids": [
+		"tt0246578"
+	]
+},
+{
+	"_id": "nm0471811",
+	"name": "Kim Krizan",
+	"movie_ids": [
+		"tt0112471"
+	]
+},
+{
+	"_id": "nm0483766",
+	"name": "Jake LaMotta",
+	"movie_ids": [
+		"tt0081398"
+	]
+},
+{
+	"_id": "nm0493042",
+	"name": "T.E. Lawrence",
+	"movie_ids": [
+		"tt0056172"
+	]
+},
+{
+	"_id": "nm0497369",
+	"name": "Harper Lee",
+	"movie_ids": [
+		"tt0056592"
+	]
+},
+{
+	"_id": "nm0542534",
+	"name": "Herman J. Mankiewicz",
+	"movie_ids": [
+		"tt0033467"
+	]
+},
+{
+	"_id": "nm0562346",
+	"name": "Carl Mayer",
+	"movie_ids": [
+		"tt0018455"
+	]
+},
+{
+	"_id": "nm0563301",
+	"name": "Craig Mazin",
+	"movie_ids": [
+		"tt2381991"
+	]
+},
+{
+	"_id": "nm0575293",
+	"name": "Irene Mecchi",
+	"movie_ids": [
+		"tt0110357"
+	]
+},
+{
+	"_id": "nm0587518",
+	"name": "John Milius",
+	"movie_ids": [
+		"tt0078788"
+	]
+},
+{
+	"_id": "nm0588340",
+	"name": "Frank Miller",
+	"movie_ids": [
+		"tt0401792"
+	]
+},
+{
+	"_id": "nm0604948",
+	"name": "Peter Morgan",
+	"movie_ids": [
+		"tt1979320"
+	]
+},
+{
+	"_id": "nm0621586",
+	"name": "Sylvia Nasar",
+	"movie_ids": [
+		"tt0268978"
+	]
+},
+{
+	"_id": "nm0634240",
+	"name": "Christopher Nolan",
+	"movie_ids": [
+		"tt0209144",
+		"tt1375666",
+		"tt0816692"
+	]
+},
+{
+	"_id": "nm0634300",
+	"name": "Jonathan Nolan",
+	"movie_ids": [
+		"tt0209144",
+		"tt0816692"
+	]
+},
+{
+	"_id": "nm0639321",
+	"name": "Dan O'Bannon",
+	"movie_ids": [
+		"tt0078748"
+	]
+},
+{
+	"_id": "nm0640334",
+	"name": "Gavin O'Connor",
+	"movie_ids": [
+		"tt1291584"
+	]
+},
+{
+	"_id": "nm0644823",
+	"name": "Hideo Oguni",
+	"movie_ids": [
+		"tt0089881"
+	]
+},
+{
+	"_id": "nm0672015",
+	"name": "Zak Penn",
+	"movie_ids": [
+		"tt0848228"
+	]
+},
+{
+	"_id": "nm0672459",
+	"name": "David Webb Peoples",
+	"movie_ids": [
+		"tt0105695",
+		"tt0083658"
+	]
+},
+{
+	"_id": "nm0677037",
+	"name": "Bob Peterson",
+	"movie_ids": [
+		"tt1049413"
+	]
+},
+{
+	"_id": "nm0683380",
+	"name": "Nicholas Pileggi",
+	"movie_ids": [
+		"tt0112641",
+		"tt0099685"
+	]
+},
+{
+	"_id": "nm0725983",
+	"name": "John Ridley",
+	"movie_ids": [
+		"tt2024544"
+	]
+},
+{
+	"_id": "nm0731271",
+	"name": "Jonathan Roberts",
+	"movie_ids": [
+		"tt0110357"
+	]
+},
+{
+	"_id": "nm0734441",
+	"name": "Robert Rodat",
+	"movie_ids": [
+		"tt0120815"
+	]
+},
+{
+	"_id": "nm0744839",
+	"name": "Eric Roth",
+	"movie_ids": [
+		"tt0109830"
+	]
+},
+{
+	"_id": "nm0787323",
+	"name": "Peter Shaffer",
+	"movie_ids": [
+		"tt0086879"
+	]
+},
+{
+	"_id": "nm0795953",
+	"name": "Ronald Shusett",
+	"movie_ids": [
+		"tt0078748"
+	]
+},
+{
+	"_id": "nm0796117",
+	"name": "M. Night Shyamalan",
+	"movie_ids": [
+		"tt0167404"
+	]
+},
+{
+	"_id": "nm0801737",
+	"name": "Upton Sinclair",
+	"movie_ids": [
+		"tt0469494"
+	]
+},
+{
+	"_id": "nm0818746",
+	"name": "Evan Spiliotopoulos",
+	"movie_ids": [
+		"tt2381991"
+	]
+},
+{
+	"_id": "nm0825010",
+	"name": "Joseph Stefano",
+	"movie_ids": [
+		"tt0054215"
+	]
+},
+{
+	"_id": "nm0834960",
+	"name": "Danny Strong",
+	"movie_ids": [
+		"tt1951266"
+	]
+},
+{
+	"_id": "nm0837183",
+	"name": "Hermann Sudermann",
+	"movie_ids": [
+		"tt0018455"
+	]
+},
+{
+	"_id": "nm0844262",
+	"name": "Wladyslaw Szpilman",
+	"movie_ids": [
+		"tt0253474"
+	]
+},
+{
+	"_id": "nm0848217",
+	"name": "Ted Tally",
+	"movie_ids": [
+		"tt0102926"
+	]
+},
+{
+	"_id": "nm0853138",
+	"name": "Samuel A. Taylor",
+	"movie_ids": [
+		"tt0052357"
+	]
+},
+{
+	"_id": "nm0876562",
+	"name": "Karl Tunberg",
+	"movie_ids": [
+		"tt0052618"
+	]
+},
+{
+	"_id": "nm0898288",
+	"name": "Denis Villeneuve",
+	"movie_ids": [
+		"tt1255953"
+	]
+},
+{
+	"_id": "nm0902376",
+	"name": "Thea von Harbou",
+	"movie_ids": [
+		"tt0017136"
+	]
+},
+{
+	"_id": "nm0905152",
+	"name": "Andy Wachowski",
+	"movie_ids": [
+		"tt0133093"
+	]
+},
+{
+	"_id": "nm0905154",
+	"name": "Lana Wachowski",
+	"movie_ids": [
+		"tt0133093"
+	]
+},
+{
+	"_id": "nm0908753",
+	"name": "Lew Wallace",
+	"movie_ids": [
+		"tt0052618"
+	]
+},
+{
+	"_id": "nm0908824",
+	"name": "Randall Wallace",
+	"movie_ids": [
+		"tt0112573"
+	]
+},
+{
+	"_id": "nm0913346",
+	"name": "Deric Washburn",
+	"movie_ids": [
+		"tt0077416"
+	]
+},
+{
+	"_id": "nm0920543",
+	"name": "Irvine Welsh",
+	"movie_ids": [
+		"tt0117951"
+	]
+},
+{
+	"_id": "nm0923736",
+	"name": "Joss Whedon",
+	"movie_ids": [
+		"tt0848228"
+	]
+},
+{
+	"_id": "nm0932078",
+	"name": "Kevin Williamson",
+	"movie_ids": [
+		"tt3560094"
+	]
+},
+{
+	"_id": "nm0959003",
+	"name": "Stefan Zweig",
+	"movie_ids": [
+		"tt2278388"
+	]
+},
+{
+	"_id": "nm1010405",
+	"name": "Nick Schenk",
+	"movie_ids": [
+		"tt1205489"
+	]
+},
+{
+	"_id": "nm1010540",
+	"name": "Terence Winter",
+	"movie_ids": [
+		"tt0993846"
+	]
+},
+{
+	"_id": "nm1083982",
+	"name": "Andy Weir",
+	"movie_ids": [
+		"tt3659388"
+	]
+},
+{
+	"_id": "nm1185849",
+	"name": "Solomon Northup",
+	"movie_ids": [
+		"tt2024544"
+	]
+},
+{
+	"_id": "nm1206844",
+	"name": "Drew Goddard",
+	"movie_ids": [
+		"tt3659388"
+	]
+},
+{
+	"_id": "nm1212331",
+	"name": "Dennis Lehane",
+	"movie_ids": [
+		"tt1130884"
+	]
+},
+{
+	"_id": "nm1416431",
+	"name": "Wajdi Mouawad",
+	"movie_ids": [
+		"tt1255953"
+	]
+},
+{
+	"_id": "nm1994243",
+	"name": "Scott Z. Burns",
+	"movie_ids": [
+		"tt0440963"
+	]
+},
+{
+	"_id": "nm2343644",
+	"name": "Greg White",
+	"movie_ids": [
+		"tt1773041"
+	]
+},
+{
+	"_id": "nm3164738",
+	"name": "Dave Johannson",
+	"movie_ids": [
+		"tt1205489"
+	]
+},
+{
+	"_id": "nm3227090",
+	"name": "Damien Chazelle",
+	"movie_ids": [
+		"tt2582802"
+	]
+},
+{
+	"_id": "nm3294574",
+	"name": "Anthony Tambakis",
+	"movie_ids": [
+		"tt1291584"
+	]
+},
+{
+	"_id": "nm5058839",
+	"name": "Gillian Flynn",
+	"movie_ids": [
+		"tt2267998"
+	]
+}]
+

@@ -1,0 +1,305 @@
+[{
+	"_id": "nm0000005",
+	"name": "Ingmar Bergman"
+},
+{
+	"_id": "nm0000033",
+	"name": "Alfred Hitchcock"
+},
+{
+	"_id": "nm0000040",
+	"name": "Stanley Kubrick"
+},
+{
+	"_id": "nm0000041",
+	"name": "Akira Kurosawa"
+},
+{
+	"_id": "nm0000080",
+	"name": "Orson Welles"
+},
+{
+	"_id": "nm0000095",
+	"name": "Woody Allen"
+},
+{
+	"_id": "nm0000116",
+	"name": "James Cameron"
+},
+{
+	"_id": "nm0000122",
+	"name": "Charles Chaplin"
+},
+{
+	"_id": "nm0000142",
+	"name": "Clint Eastwood"
+},
+{
+	"_id": "nm0000154",
+	"name": "Mel Gibson"
+},
+{
+	"_id": "nm0000165",
+	"name": "Ron Howard"
+},
+{
+	"_id": "nm0000180",
+	"name": "David Lean"
+},
+{
+	"_id": "nm0000217",
+	"name": "Martin Scorsese"
+},
+{
+	"_id": "nm0000229",
+	"name": "Steven Spielberg"
+},
+{
+	"_id": "nm0000231",
+	"name": "Oliver Stone"
+},
+{
+	"_id": "nm0000233",
+	"name": "Quentin Tarantino"
+},
+{
+	"_id": "nm0000277",
+	"name": "Richard Attenborough"
+},
+{
+	"_id": "nm0000338",
+	"name": "Francis Ford Coppola"
+},
+{
+	"_id": "nm0000361",
+	"name": "Brian De Palma"
+},
+{
+	"_id": "nm0000399",
+	"name": "David Fincher"
+},
+{
+	"_id": "nm0000485",
+	"name": "Fritz Lang"
+},
+{
+	"_id": "nm0000500",
+	"name": "Richard Linklater"
+},
+{
+	"_id": "nm0000520",
+	"name": "Michael Mann"
+},
+{
+	"_id": "nm0000591",
+	"name": "Roman Polanski"
+},
+{
+	"_id": "nm0000631",
+	"name": "Ridley Scott"
+},
+{
+	"_id": "nm0000697",
+	"name": "Billy Wilder"
+},
+{
+	"_id": "nm0000709",
+	"name": "Robert Zemeckis"
+},
+{
+	"_id": "nm0000759",
+	"name": "Paul Thomas Anderson"
+},
+{
+	"_id": "nm0000814",
+	"name": "John G. Avildsen"
+},
+{
+	"_id": "nm0000905",
+	"name": "Roberto Benigni"
+},
+{
+	"_id": "nm0000965",
+	"name": "Danny Boyle"
+},
+{
+	"_id": "nm0001047",
+	"name": "Michael Cimino"
+},
+{
+	"_id": "nm0001053",
+	"name": "Ethan Coen"
+},
+{
+	"_id": "nm0001054",
+	"name": "Joel Coen"
+},
+{
+	"_id": "nm0001081",
+	"name": "Cameron Crowe"
+},
+{
+	"_id": "nm0001104",
+	"name": "Frank Darabont"
+},
+{
+	"_id": "nm0001129",
+	"name": "Jonathan Demme"
+},
+{
+	"_id": "nm0001232",
+	"name": "Milos Forman"
+},
+{
+	"_id": "nm0001486",
+	"name": "Sidney Lumet"
+},
+{
+	"_id": "nm0001661",
+	"name": "Rob Reiner"
+},
+{
+	"_id": "nm0001675",
+	"name": "Robert Rodriguez"
+},
+{
+	"_id": "nm0001741",
+	"name": "Bryan Singer"
+},
+{
+	"_id": "nm0001814",
+	"name": "Gus Van Sant"
+},
+{
+	"_id": "nm0002031",
+	"name": "Michael Curtiz"
+},
+{
+	"_id": "nm0003638",
+	"name": "F.W. Murnau"
+},
+{
+	"_id": "nm0004056",
+	"name": "Andrew Stanton"
+},
+{
+	"_id": "nm0005124",
+	"name": "John Lasseter"
+},
+{
+	"_id": "nm0005222",
+	"name": "Sam Mendes"
+},
+{
+	"_id": "nm0021249",
+	"name": "Roger Allers"
+},
+{
+	"_id": "nm0027572",
+	"name": "Wes Anderson"
+},
+{
+	"_id": "nm0167241",
+	"name": "Henri-Georges Clouzot"
+},
+{
+	"_id": "nm0215455",
+	"name": "Ronnie Del Carmen"
+},
+{
+	"_id": "nm0230032",
+	"name": "Pete Docter"
+},
+{
+	"_id": "nm0339030",
+	"name": "Paul Greengrass"
+},
+{
+	"_id": "nm0386246",
+	"name": "Rajkumar Hirani"
+},
+{
+	"_id": "nm0386570",
+	"name": "Oliver Hirschbiegel"
+},
+{
+	"_id": "nm0446819",
+	"name": "Richard Kelly"
+},
+{
+	"_id": "nm0588340",
+	"name": "Frank Miller"
+},
+{
+	"_id": "nm0591450",
+	"name": "Rob Minkoff"
+},
+{
+	"_id": "nm0612322",
+	"name": "Robert Mulligan"
+},
+{
+	"_id": "nm0634240",
+	"name": "Christopher Nolan"
+},
+{
+	"_id": "nm0640334",
+	"name": "Gavin O'Connor"
+},
+{
+	"_id": "nm0677037",
+	"name": "Bob Peterson"
+},
+{
+	"_id": "nm0796117",
+	"name": "M. Night Shyamalan"
+},
+{
+	"_id": "nm0836328",
+	"name": "John Sturges"
+},
+{
+	"_id": "nm0881279",
+	"name": "Lee Unkrich"
+},
+{
+	"_id": "nm0898288",
+	"name": "Denis Villeneuve"
+},
+{
+	"_id": "nm0905152",
+	"name": "Andy Wachowski"
+},
+{
+	"_id": "nm0905154",
+	"name": "Lana Wachowski"
+},
+{
+	"_id": "nm0923736",
+	"name": "Joss Whedon"
+},
+{
+	"_id": "nm0943758",
+	"name": "William Wyler"
+},
+{
+	"_id": "nm1031639",
+	"name": "Cedric Nicolas-Troyan"
+},
+{
+	"_id": "nm1349376",
+	"name": "Francis Lawrence"
+},
+{
+	"_id": "nm2343644",
+	"name": "Greg White"
+},
+{
+	"_id": "nm2588606",
+	"name": "Steve McQueen"
+},
+{
+	"_id": "nm3227090",
+	"name": "Damien Chazelle"
+}]
+

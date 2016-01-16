@@ -1,0 +1,1602 @@
+<h1 id="mongoid-relations-and-queries">Mongoid Relations and Queries</h1>
+<p>This document describes the highlights and assembly of the <code>Movies</code> application using a Mongoid-based backend. Much of the emphasis is placed on the data-tier and the controller, while leaving the view minimally integrated. This is to keep the focus on the data tier.</p>
+<p>You will find the following topics discussed in this module:</p>
+<ul>
+<li>Model classes</li>
+<li>Relationships
+<ul>
+<li>Embedded</li>
+<li>Linked</li>
+</ul></li>
+<li>Queries</li>
+<li>Geolocation</li>
+<li>Indexes, etc.</li>
+</ul>
+<h2 id="highlights">Highlights</h2>
+<h3 id="initialization">Initialization</h3>
+<p>This section quickly covers the highlights relative to getting started. All cooked data is located within <code>db/*.json</code> and can be easily imported using the <code>rake</code> shell command.</p>
+<ol style="list-style-type: decimal">
+<li><p>Run <code>bundle</code> to ensure the necessary gems are installed</p></li>
+<li><p>(In a separate terminal) Start the MongoDB server using <code>mongod</code></p></li>
+<li><p>Import the data using <code>rake db:seed</code> to create all collections. This will execute the code within <code>db/seed.rb</code> and use the JSON data also located in the <code>db/</code> directory.</p>
+<pre class="shell"><code>$ rake db:seed
+adding places
+adding actors
+adding writers
+adding directors
+adding movies</code></pre></li>
+<li><p>Add required indexes to the collections using rake <code>db:mongoid:create_indexes</code>. The source of these indexes are located within the associated Mongoid model classes in the <code>app/model</code> directory.</p>
+<pre class="shell"><code>$ rake db:mongoid:create_indexes
+D, [2015-11-30T17:26:06.796020 #34396] DEBUG -- : MONGODB | Adding localhost:27017 to the cluster.
+D, [2015-11-30T17:26:06.837599 #34396] DEBUG -- : MONGODB | localhost:27017 | movies_development.createIndexes | STARTED | {&quot;createIndexes&quot;=&gt;&quot;actors&quot;, &quot;indexes&quot;=&gt;[{:key=&gt;{:&quot;place_of_birth.geolocation&quot;=&gt;&quot;2dsphere&quot;}, :name=&gt;&quot;place_of_birth.geolocation_2dsphere&quot;}]}
+D, [2015-11-30T17:26:06.873807 #34396] DEBUG -- : MONGODB | localhost:27017 | movies_development.createIndexes | SUCCEEDED | 0.036063000000000005s</code></pre></li>
+</ol>
+<p>One of the indexes created is a <code>2dsphere</code> index on the <code>place_of_birth.geolocation</code> property of an <code>Actor</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Actor</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  embeds_one <span class="st">:place_of_birth</span>, as: <span class="st">:locatable</span>, class_name: <span class="st">&#39;Place&#39;</span>
+  ...
+  index ({ :<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt; <span class="dt">Mongo</span>::<span class="dt">Index</span>::<span class="dt">GEO2DSPHERE</span> })
+  ...
+<span class="kw">end</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0543215&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Sarah Manninen&quot;</span>,
+ <span class="st">:place_of_birth=</span>&gt;
+  {<span class="st">:_id=</span>&gt;<span class="st">&quot;Pasadena, CA, USA&quot;</span>,
+   <span class="st">:geolocation=</span>&gt;{<span class="st">:type=</span>&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">:coordinates=</span>&gt;[-<span class="fl">118.1445155</span>, <span class="fl">34.1477849</span>]},
+   <span class="st">:city=</span>&gt;<span class="st">&quot;Pasadena&quot;</span>,
+   <span class="st">:county=</span>&gt;<span class="st">&quot;Los Angeles County&quot;</span>,
+   <span class="st">:state=</span>&gt;<span class="st">&quot;CA&quot;</span>,
+   <span class="st">:country=</span>&gt;<span class="st">&quot;US&quot;</span>}}</code></pre>
+<h3 id="model-types-and-document-representation">Model Types and Document Representation</h3>
+<p>This section describes the individual document and custom types contained within the example. Documents have <code>_id</code> properties. Custom types are anonymous compound data structures embedded within documents.</p>
+<h3 id="measurement-custom-type">Measurement (Custom Type)</h3>
+<p><code>Measurement</code> is an example of a custom type. Instead of modeling a property with just the <code>amount</code> (60) or a compound label with &quot;amount (units)&quot; (&quot;60 min&quot;), we have chosen to create a compound data structure with <code>amount</code> and <code>units</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="st">:runtime=</span>&gt;{<span class="st">:amount=</span>&gt;<span class="dv">60</span>, <span class="st">:units=</span>&gt;<span class="st">&quot;min&quot;</span>}</code></pre>
+<p>The entire class has been supplied here for the first example of a custom class. All other custom classes have a similar concept to:</p>
+<ul>
+<li>provide an initialize method that is marshaling format independent</li>
+<li>provide one (1) instance method called <code>mongoize</code> required by Mongoid that will marshal the state of the instance into database form.</li>
+<li>provide three (3) class methods to:
+<ul>
+<li>transform any form of the object into database form (<code>mongoize</code>)</li>
+<li>create an object instance from database form (<code>demongoize</code>)</li>
+<li>support various other transformations required by the criteria queries (<code>evolve</code>).</li>
+</ul></li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Measurement</span>
+  <span class="ot">attr_reader</span> <span class="st">:amount</span>, <span class="st">:units</span>
+
+  <span class="kw">def</span> initialize(amount, units=<span class="dv">nil</span>)
+    <span class="ot">@amount</span>=amount
+    <span class="ot">@units</span> = units
+    <span class="co">#normalize</span>
+    <span class="kw">case</span> 
+    <span class="kw">when</span> <span class="ot">@units</span> == <span class="st">&quot;meters&quot;</span> <span class="kw">then</span> <span class="ot">@amount</span>=(<span class="ot">@amount</span>/<span class="fl">0.3048</span>); <span class="ot">@units</span>=<span class="st">&quot;feet&quot;</span>
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+
+  <span class="co">#creates a DB-form of the instance</span>
+  <span class="kw">def</span> mongoize
+    <span class="ot">@units</span> ? {<span class="st">:amount</span> =&gt; <span class="ot">@amount</span>, <span class="st">:units</span> =&gt; <span class="ot">@units</span>} : {<span class="st">:amount</span> =&gt; <span class="ot">@amount</span>}
+  <span class="kw">end</span>
+
+  <span class="co">#creates an instance of the class from the DB-form of the data</span>
+  <span class="kw">def</span> <span class="dv">self</span>.demongoize(object)
+    <span class="dt">Measurement</span>.new(object[<span class="st">:amount</span>], object[<span class="st">:units</span>])
+  <span class="kw">end</span>
+
+  <span class="co">#takes in all forms of the object and produces a DB-friendly form</span>
+  <span class="kw">def</span> <span class="dv">self</span>.mongoize(object) 
+    <span class="kw">case</span> object
+    <span class="kw">when</span> <span class="dt">Measurement</span> <span class="kw">then</span> object.mongoize
+    <span class="kw">else</span> object
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+
+  <span class="co">#used by criteria to convert object to DB-friendly form</span>
+  <span class="kw">def</span> evolve(object)
+    <span class="kw">case</span> object
+    <span class="kw">when</span> <span class="dt">Measurement</span> <span class="kw">then</span> object.mongoize
+    <span class="kw">else</span> object
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre>
+<h3 id="point-custom-type">Point (Custom Type)</h3>
+<p><code>Point</code> is a custom class that represents a geolocation point. It marshals itself in <a href="http://geojson.org/geojson-spec.html"><code>GeoJSON Point</code></a> format, but is used to read in other formats commonly found. The coordinates array is in the order of [<code>longitude</code>, <code>latitude</code>]. The inner workings of the class function much like the <code>Measurement</code> custom type.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:type=</span>&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">:coordinates=</span>&gt;[-<span class="fl">118.1445155</span>, <span class="fl">34.1477849</span>]},</code></pre>
+<h3 id="place-document-model-class">Place (Document Model Class)</h3>
+<p><code>Place</code> is an abstraction added to <code>Point</code> to hold location information about the gelocation point. It commonly contains official address information reported by the <a href="https://developers.google.com/maps/documentation/geocoding/intro"><code>Google Maps Geocoding API</code></a>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;Pasadena, CA, USA&quot;</span>,
+  <span class="st">:geolocation=</span>&gt;{<span class="st">&quot;type&quot;</span>=&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">&quot;coordinates&quot;</span>=&gt;[-<span class="fl">118.1445155</span>, <span class="fl">34.1477849</span>]},
+  <span class="st">:city=</span>&gt;<span class="st">&quot;Pasadena&quot;</span>,
+  <span class="st">:county=</span>&gt;<span class="st">&quot;Los Angeles County&quot;</span>,
+  <span class="st">:state=</span>&gt;<span class="st">&quot;CA&quot;</span>,
+  <span class="st">:country=</span>&gt;<span class="st">&quot;US&quot;</span>}</code></pre>
+<p>A few things to point out about this model class</p>
+<ul>
+<li><code>_id</code> is mapped to <code>formatted_address</code></li>
+<li>the <code>geolocation</code> property uses a custom type (<code>Point</code>)</li>
+<li>although you will find this document type embedded within other documents, it exists as a stand-alone document within its own <code>places</code> collection.</li>
+<li>more details about this class will be shown in the relationships section below.</li>
+<li>stating the field type is not required by Mongoid, but Mongoid will test for type if supplied. A few of the attributes have had their type removed just to demonstrate they are optional.</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Place</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:_id</span>, type: <span class="dt">String</span>, default: -&gt; { formatted_address }
+  field <span class="st">:formatted_address</span>, type: <span class="dt">String</span>
+  field <span class="st">:geolocation</span>, type: <span class="dt">Point</span>
+  field <span class="st">:street_number</span>
+  field <span class="st">:street_name</span>
+  field <span class="st">:city</span>
+  field <span class="st">:postal_code</span>, type: <span class="dt">String</span> 
+  field <span class="st">:county</span>, type: <span class="dt">String</span>
+  field <span class="st">:state</span>, type: <span class="dt">String</span>
+  field <span class="st">:country</span>, type: <span class="dt">String</span>
+  ...
+<span class="kw">end</span></code></pre>
+<h3 id="actor">Actor</h3>
+<p><code>Actor</code> is a document model class that represents someone who plays a role in a <code>Movie</code>. They are independent of any one movie -- thus a candidate to stand-alone in their own collection and be referenced. The information in this model class is unique to the <code>Actor</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id&quot;=&gt;&quot;</span>nm0993498<span class="st">&quot;,</span>
+<span class="st"> :bio=&gt; &quot;</span><span class="dt">Arisa</span> <span class="dt">Cox</span> was born on <span class="dt">December</span> <span class="dv">7</span>, <span class="dv">1978</span> <span class="kw">in</span> <span class="dt">Toronto</span>, ...
+ <span class="st">:birthName=</span>&gt;<span class="st">&quot;Arisa Natalie Cox&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Arisa Cox&quot;</span>,
+ <span class="st">:urlPhoto=</span>&gt; <span class="st">&quot;http://ia.media-imdb.com/images/M/MV5BM...7_AL_.jpg&quot;</span>,
+ <span class="st">:date_of_birth=</span>&gt;<span class="dv">1978-12</span><span class="bn">-07</span> <span class="dv">00</span>:<span class="dv">00</span>:<span class="dv">00</span> <span class="dt">UTC</span>,
+ <span class="st">:place_of_birth=</span>&gt; ... (see <span class="dv">1</span>:<span class="dv">1</span> embedded relationship example)</code></pre>
+<p>A few things to point out about this model class</p>
+<ul>
+<li>although not necessary since the names match the default choice -- the instances of <code>Actor</code> will be stored in the <code>actors</code> collection.</li>
+<li><code>created_at</code> and <code>updated_at</code> fields can be added and managed by Mongoid with the addition of the <code>Timestamps</code> mixin. This will be demonstrated later.</li>
+<li>The camelCase <code>birthName</code> from the document is mapped to the snake_case <code>birth_name</code> in the model class. This becomes important if you compress your JSON names or are simply trying to comply with Rails naming conventions for model property names (a good thing to do).</li>
+<li><code>date_of_birth</code> has been represented as a <code>Date</code> type instead of a string representation of the date</li>
+<li><code>height</code> is represented as a custom type (<code>Measurement</code>)</li>
+<li>more details about this class will be shown in the relationships section below.</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Actor</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+<span class="co">#  include Mongoid::Timestamps</span>
+  store_in collection: <span class="st">&quot;actors&quot;</span>
+
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+  field <span class="st">:birthName</span>, as: <span class="st">:birth_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:date_of_birth</span>, type: <span class="dt">Date</span>
+  field <span class="st">:height</span>, type: <span class="dt">Measurement</span>
+  field <span class="st">:bio</span>, type: <span class="dt">String</span>
+  ... (see relationships <span class="kw">for</span> additional details)
+<span class="kw">end</span></code></pre>
+<p>One thing to note is that by moving our schema away from being UI display/String-based, we have introduced a complexity for the UI to make non-String updates. An attempt to map many of the String to data type conversions has been inserted into the examples, but there clearly are additional data type conversions to consider when you see the full end-to-end interactions.</p>
+<p>Notice that both the phiscal document key and the model class alias key can be used when inspecting the model instance. In the following case, we are still able to access the raw <code>birthName</code> in the document, in addition to the mapped <code>birth_name</code> in the class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Actor</span>.find(<span class="st">&quot;nm0993498&quot;</span>).birth_name
+ =&gt; <span class="st">&quot;Arisa Natalie Cox&quot;</span> 
+&gt; <span class="dt">Actor</span>.find(<span class="st">&quot;nm0993498&quot;</span>).birthName
+ =&gt; <span class="st">&quot;Arisa Natalie Cox&quot;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0993498&quot;</span>,
+ <span class="st">:birthName=</span>&gt;<span class="st">&quot;Arisa Natalie Cox&quot;</span>,</code></pre>
+<h3 id="writer">Writer</h3>
+<p><code>Writer</code> is one of the authors of a <code>Movie</code> and, like <code>Actor</code>, stored in a separate collection. The example does not include enough data to warrant a separate collection, but we are going to pretend that is true. One thing to note is that <code>Writer</code> has no refined role within a Movie -- so it will be referenced directly from the <code>Movie</code> document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0905152&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Andy Wachowski&quot;</span> ... (please imagine more properties) }</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+  ...
+<span class="kw">end</span></code></pre>
+<h3 id="director">Director</h3>
+<p><code>Director</code> is one of the directors of a <code>Movie</code> and, like <code>Writer</code>, requires some imagination on your part that we have enough data here to warrant a separate collection for the <code>Director</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span> ... (please imagine more properties) } </code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Director</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre>
+<h3 id="directorref">DirectorRef</h3>
+<p><code>DirectorRef</code> is an annotated reference to a <code>Director</code>. It will be used to cache stable/core director information that the referencing document/view normally cares about and then contains a link to the details of the <code>Director</code> (where you are asked to use your imagination that more details exist).</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:name=</span>&gt;<span class="st">&quot;F.W. Murnau&quot;</span>, <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0003638&quot;</span>}</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">DirectorRef</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre>
+<h3 id="movierole">MovieRole</h3>
+<p><code>MovieRole</code> is a character in a <code>Movie</code> played by an <code>Actor</code>. It contains descriptive information about the movie character and the id, name, and url of the actor image and profile (both just URLs). The information for this actor that is not relative to this movie or movie role (character) is located within the <code>actors</code> collection.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:actorName=</span>&gt;<span class="st">&quot;George O&#39;Brien&quot;</span>,
+  <span class="st">:character=</span>&gt;<span class="st">&quot;The Man&quot;</span>,
+  <span class="st">:main=</span>&gt;<span class="dv">true</span>,
+  <span class="st">:urlCharacter=</span>&gt;<span class="st">&quot;http://www.imdb.com/character/ch0131526&quot;</span>,
+  <span class="st">:urlPhoto=</span>&gt;
+   <span class="st">&quot;http://ia.media-imdb.com/images/M/MV5BMTI2MDg3NjYx...AL_.jpg&quot;</span>,
+  <span class="st">:urlProfile=</span>&gt;<span class="st">&quot;http://www.imdb.com/name/nm0639563&quot;</span>,
+  <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0639563&quot;</span>}</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">MovieRole</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:character</span>, type: <span class="dt">String</span>
+  field <span class="st">:actorName</span>, as: <span class="st">:actor_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:main</span>, type: <span class="dt">Mongoid</span>::<span class="dt">Boolean</span>
+  field <span class="st">:urlCharacter</span>, as: <span class="st">:url_character</span>, type: <span class="dt">String</span>
+  field <span class="st">:urlPhoto</span>, as: <span class="st">:url_photo</span>, type: <span class="dt">String</span>
+  field <span class="st">:urlProfile</span>, as: <span class="st">:url_profile</span>, type: <span class="dt">String</span>
+  ...
+<span class="kw">end</span></code></pre>
+<h3 id="movie">Movie</h3>
+<p><code>Movie</code> contains core information about the <code>Movie</code> and links to other information related to the movie.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt0018455&quot;</span>,
+ <span class="st">:actors=</span>&gt;
+  [{<span class="st">:actorName=</span>&gt;<span class="st">&quot;George O&#39;Brien&quot;</span>,
+    <span class="st">:character=</span>&gt;<span class="st">&quot;The Man&quot;</span>,
+    <span class="st">:main=</span>&gt;<span class="dv">true</span>,
+    <span class="st">:urlCharacter=</span>&gt;<span class="st">&quot;http://www.imdb.com/character/ch0131526&quot;</span>,
+    <span class="st">:urlPhoto=</span>&gt;
+     <span class="st">&quot;http://ia.media-imdb.com/images/M/MV5BMTI2MDg3NjYx...AL_.jpg&quot;</span>,
+    <span class="st">:urlProfile=</span>&gt;<span class="st">&quot;http://www.imdb.com/name/nm0639563&quot;</span>,
+    <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0639563&quot;</span>},
+    ...
+    ],
+ <span class="st">:countries=</span>&gt;[<span class="st">&quot;USA&quot;</span>],
+ <span class="st">:directors=</span>&gt;[{<span class="st">:name=</span>&gt;<span class="st">&quot;F.W. Murnau&quot;</span>, <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0003638&quot;</span>}],
+ <span class="st">:filmingLocations=</span>&gt;
+  [<span class="st">&quot;Big Bear Lake&quot;</span>, <span class="st">&quot;Big Bear Valley&quot;</span>, <span class="st">&quot;San Bernardino National Forest&quot;</span>, <span class="st">&quot;California&quot;</span>, <span class="st">&quot;USA&quot;</span>],
+ <span class="st">:genres=</span>&gt;[<span class="st">&quot;Comedy&quot;</span>, <span class="st">&quot;Drama&quot;</span>, <span class="st">&quot;Romance&quot;</span>],
+ <span class="st">:languages=</span>&gt;[],
+ <span class="st">:metascore=</span>&gt;<span class="st">&quot;&quot;</span>,
+ <span class="st">:originalTitle=</span>&gt;<span class="st">&quot;Sunrise: A Song of Two Humans&quot;</span>,
+ <span class="st">:plot=</span>&gt; <span class="st">&quot;In this fable-morality subtitled  ...&quot;</span>
+ <span class="st">:rated=</span>&gt;<span class="st">&quot;NOT RATED&quot;</span>,
+ <span class="st">:rating=</span>&gt;<span class="fl">8.4</span>,
+ <span class="st">:runtime=</span>&gt;{<span class="st">:amount=</span>&gt;<span class="dv">94</span>, <span class="st">:units=</span>&gt;<span class="st">&quot;min&quot;</span>},
+ <span class="st">:simplePlot=</span>&gt; <span class="st">&quot;A married farmer falls under the spell of ...</span>
+<span class="st"> :title=&gt;&quot;</span><span class="dt">Sunrise</span><span class="st">&quot;,</span>
+<span class="st"> :type=&gt;&quot;</span><span class="dt">Movie</span><span class="st">&quot;,</span>
+<span class="st"> :urlIMDB=&gt;&quot;</span>http:<span class="ot">//</span>www.imdb.com/title/tt0018455<span class="st">&quot;,</span>
+<span class="st"> :urlPoster=&gt;</span>
+<span class="st">  &quot;</span>http:<span class="ot">//i</span>a.media-imdb.com/images/M/<span class="dt">MV5BMjIzNzg4</span>....<span class="dt">TE</span>@._V1_SX214_AL_.jpg<span class="st">&quot;,</span>
+<span class="st"> :votes=&gt;25165,</span>
+<span class="st"> :writers=&gt;[&quot;</span>nm0562346<span class="st">&quot;, &quot;</span>nm0837183<span class="st">&quot;],</span>
+<span class="st"> :year=&gt;1927,</span>
+<span class="st"> :release_date=&gt;1927-01-04 00:00:00 UTC}</span></code></pre>
+<p>A few things to point out about this model class</p>
+<ul>
+<li><code>year</code> and <code>votes</code> are mapped as type <code>Integer</code></li>
+<li><code>runtime</code> is mapped as a custom type <code>Measurement</code></li>
+<li>camelCase <code>filmingLocations</code>, <code>simplePlot</code>, <code>urlIMDB</code>, and <code>urlPoster</code> names have been mapped to snake_case <code>filming_locations</code>, <code>simple_plot</code>, <code>url_IMDB</code>, and <code>url_poster</code> names.</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:title</span>, type: <span class="dt">String</span>
+  field <span class="st">:type</span>, type: <span class="dt">String</span>
+  field <span class="st">:rated</span>, type: <span class="dt">String</span>
+  field <span class="st">:year</span>, type: <span class="dt">Integer</span>
+  field <span class="st">:release_date</span>, type: <span class="dt">Date</span>
+  field <span class="st">:runtime</span>, type: <span class="dt">Measurement</span>
+  field <span class="st">:votes</span>, type: <span class="dt">Integer</span>
+  field <span class="st">:countries</span>, type: <span class="dt">Array</span>
+  field <span class="st">:languages</span>, type: <span class="dt">Array</span>
+  field <span class="st">:genres</span>, type: <span class="dt">Array</span>
+  field <span class="st">:filmingLocations</span>, as: <span class="st">:filming_locations</span>, type: <span class="dt">Array</span>
+  field <span class="st">:metascore</span>, type: <span class="dt">String</span>
+  field <span class="st">:simplePlot</span>, as: <span class="st">:simple_plot</span>,  type: <span class="dt">String</span>
+  field <span class="st">:plot</span>, type: <span class="dt">String</span>
+  field <span class="st">:urlIMDB</span>, as: <span class="st">:url_IMDB</span>,  type: <span class="dt">String</span>
+  field <span class="st">:urlPoster</span>, as: <span class="st">:url_poster</span>, type: <span class="dt">String</span>
+  ...
+<span class="kw">end</span></code></pre>
+<h3 id="model-relationships-and-realization">Model Relationships and Realization</h3>
+<p>This section describes additional relationship properties for the model types introduced above.</p>
+<h3 id="embedded-actor---place_of_birthplace">1:1 Embedded (<code>Actor -&gt; place_of_birth:Place</code>)</h3>
+<p>The <code>Actor</code> has one (1) <code>place_of_birth</code> property with an embedded <code>Place</code>. Please note that this same <code>Place</code> instance can show up in multiple <code>Actors</code> as well as other references to this specific place. That means that access to the <code>Place</code> properties are very efficient from its parent document, but must be updated everywhere as things change. In this case it would be rare to have to update these properties unless <code>Canada</code> became part of a different country.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0543215&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Sarah Manninen&quot;</span>,
+ ...
+ <span class="st">:date_of_birth=</span>&gt;<span class="dv">1977</span><span class="bn">-01</span><span class="dv">-20</span> <span class="dv">00</span>:<span class="dv">00</span>:<span class="dv">00</span> <span class="dt">UTC</span>,
+ <span class="st">:place_of_birth=</span>&gt;
+  {<span class="st">:_id=</span>&gt;<span class="st">&quot;Waterloo, ON, Canada&quot;</span>,
+   <span class="st">:geolocation=</span>&gt;{<span class="st">&quot;type&quot;</span>=&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">&quot;coordinates&quot;</span>=&gt;[-<span class="fl">80.5204096</span>, <span class="fl">43.4642578</span>]},
+   <span class="st">:city=</span>&gt;<span class="st">&quot;Waterloo&quot;</span>,
+   <span class="st">:county=</span>&gt;<span class="st">&quot;Waterloo Regional Municipality&quot;</span>,
+   <span class="st">:state=</span>&gt;<span class="st">&quot;ON&quot;</span>,
+   <span class="st">:country=</span>&gt;<span class="st">&quot;CA&quot;</span>}}</code></pre>
+<p>The embedded <code>Place</code> declares it is <code>embedded_in</code> the parent document. In this case there are many parent document types that could have a <code>Place</code>, so we take advantage of the <code>polymorphic</code> keyword and define the parent document as a <code>:locatable</code> instead of a specific model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Place</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  ...
+  embedded_in <span class="st">:locatable</span>, polymorphic: <span class="dv">true</span> 
+<span class="kw">end</span></code></pre>
+<p>The parent document declares <code>embeds_one</code> for the embedded type. However,</p>
+<ul>
+<li>since the name of the embedded class (<code>Place</code>) is not the same as the reference (<code>place_of_birth</code>), an additional property of <code>class_name: 'Place'</code> is supplied.</li>
+<li>since other types can also contain this embedded type, the polymorphic label of <code>locatable</code> is also supplied.</li>
+</ul>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Actor</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  ...
+  embeds_one <span class="st">:place_of_birth</span>, as: <span class="st">:locatable</span>, class_name: <span class="st">&#39;Place&#39;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  ...
+  embeds_one <span class="st">:hometown</span>, as: <span class="st">:locatable</span>, class_name: <span class="st">&#39;Place&#39;</span>
+<span class="kw">end</span></code></pre>
+<p>To demonstrate, lets locate an <code>Actor</code> that does not yet have an address listed and make up an address for their place of birth.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; actor=<span class="dt">Actor</span>.where(<span class="st">:place_of_birth=</span>&gt;{<span class="st">:$exists=</span>&gt;<span class="dv">0</span>}).first
+&gt; pp <span class="dt">Actor</span>.collection.find(<span class="st">:_id=</span>&gt;actor.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0828941&quot;</span>,
+ <span class="st">&quot;bio&quot;</span>=&gt; <span class="st">&quot;Gerda Stevenson was born in ...&quot;</span>
+ <span class="st">&quot;height&quot;</span>=&gt;{<span class="st">&quot;amount&quot;</span>=&gt;<span class="fl">5.413386</span>, <span class="st">&quot;units&quot;</span>=&gt;<span class="st">&quot;feet&quot;</span>},
+ <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Gerda Stevenson&quot;</span>}</code></pre>
+<p>Lets claim this person is from <code>Oakland</code> and get its address properties from our <code>places</code> collection.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; oakland=<span class="dt">Place</span>.where(<span class="st">:city=</span>&gt;<span class="st">&quot;Oakland&quot;</span>).first</code></pre>
+<p>Next we use the <code>parent.create_(embedded_relation)</code> method and a copy of the <code>place</code> properties to create an embedded instance of <code>Place</code> within <code>Actor</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; actor.create_place_of_birth(oakland.attributes)
+&gt; pp <span class="dt">Actor</span>.collection.find(<span class="st">:_id=</span>&gt;actor.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0828941&quot;</span>,
+ <span class="st">&quot;bio&quot;</span>=&gt; <span class="st">&quot;Gerda Stevenson was born in ...&quot;</span>
+ <span class="st">&quot;height&quot;</span>=&gt;{<span class="st">&quot;amount&quot;</span>=&gt;<span class="fl">5.413386</span>, <span class="st">&quot;units&quot;</span>=&gt;<span class="st">&quot;feet&quot;</span>},
+ <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Gerda Stevenson&quot;</span>,
+ <span class="st">&quot;place_of_birth&quot;</span>=&gt;
+  {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;Oakland, CA, USA&quot;</span>,
+   <span class="st">&quot;geolocation&quot;</span>=&gt;{<span class="st">&quot;type&quot;</span>=&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">&quot;coordinates&quot;</span>=&gt;[-<span class="fl">122.2711137</span>, <span class="fl">37.8043637</span>]},
+   <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;Oakland&quot;</span>,
+   <span class="st">&quot;county&quot;</span>=&gt;<span class="st">&quot;Alameda County&quot;</span>,
+   <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;CA&quot;</span>,
+   <span class="st">&quot;country&quot;</span>=&gt;<span class="st">&quot;US&quot;</span>}}</code></pre>
+<p>To show we can insert another copy of the same embedded object in another collecton -- we locate a <code>Writer</code> that does not yet have a <code>hometown</code> (we changed the relation name on purpose) and place an embedded copy of <code>Oakland</code> there too.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer=<span class="dt">Writer</span>.where(<span class="st">:hometown=</span>&gt;{<span class="st">:$exists=</span>&gt;<span class="dv">0</span>}).first
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;writer.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>, <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>}
+
+&gt; writer.create_hometown(oakland.attributes)
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;writer.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>,
+ <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>,
+ <span class="st">&quot;hometown&quot;</span>=&gt;
+  {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;Oakland, CA, USA&quot;</span>,
+   <span class="st">&quot;geolocation&quot;</span>=&gt;{<span class="st">&quot;type&quot;</span>=&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">&quot;coordinates&quot;</span>=&gt;[-<span class="fl">122.2711137</span>, <span class="fl">37.8043637</span>]},
+   <span class="st">&quot;city&quot;</span>=&gt;<span class="st">&quot;Oakland&quot;</span>,
+   <span class="st">&quot;county&quot;</span>=&gt;<span class="st">&quot;Alameda County&quot;</span>,
+   <span class="st">&quot;state&quot;</span>=&gt;<span class="st">&quot;CA&quot;</span>,
+   <span class="st">&quot;country&quot;</span>=&gt;<span class="st">&quot;US&quot;</span>}}</code></pre>
+<p>We can inspect the <code>writer</code> object methods for other things we can do with our embedded object <code>hometown</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer.methods.grep <span class="ot">/hometown/</span> 
+ =&gt; [<span class="st">:hometown</span>, <span class="st">:hometown=</span>, <span class="st">:hometown?</span>, <span class="st">:has_hometown?</span>, <span class="st">:build_hometown</span>, <span class="st">:create_hometown</span>] </code></pre>
+<p>We can get the embedded object.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer.hometown.id
+ =&gt; <span class="st">&quot;Oakland, CA, USA&quot;</span> </code></pre>
+<p>We can inquire whether we have an instance of the hometown.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer.hometown?
+ =&gt; <span class="dv">true</span> 
+&gt; writer.has_hometown?
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>We can build a transient instance of the embedded object.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; place=writer.build_hometown</code></pre>
+<p>We can create a hollow embedded object. This still reports that the parent document has an instance of the embedded -- even though it is hollow.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer.create_hometown
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;writer.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>, <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>, <span class="st">&quot;hometown&quot;</span>=&gt;{}}
+&gt; writer.has_hometown?
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>We can remove the embedded object.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer.hometown=<span class="dv">nil</span>
+ =&gt; <span class="dv">nil</span> 
+&gt; writer.has_hometown?
+ =&gt; <span class="dv">false</span> 
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;writer.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>, <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>}</code></pre>
+<p>But notice that simple assignment does not embed the transient association.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; writer.hometown
+ =&gt; <span class="dv">nil</span> 
+&gt; writer.hometown=oakland
+&gt; writer.hometown
+ =&gt; <span class="co">#&lt;Place _id: Oakland, CA, USA...</span>
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;writer.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>, <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>}
+&gt; writer.save
+ =&gt; <span class="dv">true</span> 
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;writer.id).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>, <span class="st">&quot;name&quot;</span>=&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>}</code></pre>
+<h3 id="m1-linked-director---residenceplace">M:1 Linked (<code>Director -&gt; residence:Place</code>)</h3>
+<p>In a M:1 relationship, the one (1) side is the parent (with a primary key) and the many (M) side is the child (with a foreign key to the parent). The child must declare a <code>belongs_to</code> property to have the foreign key stored locally to realize the relationship. The parent optionally defines a <code>has_many</code> property. In this case we actually have a M:1 uni-directional relationship. Many directors can have one (1) residence:Place and can navigate that link. However, the parent does not know about the relationship and cannot navigate in the other direction. Since <code>Place</code> is being used in different contexts differently -- we chose to keep this uni-directional and leave <code>Place</code> ignorant of what is related to it.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span>,
+ <span class="st">:residence_id=</span>&gt;<span class="st">&quot;Los Angeles, CA, USA&quot;</span>}</code></pre>
+<p>Remember that <code>Place</code> uses its <code>formatted_address</code> as its <code>_id</code>. Thus the foreign key in this case actually contains useful business information even before navigating the link.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Director</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  ...
+  belongs_to <span class="st">:residence</span>, class_name: <span class="st">&#39;Place&#39;</span>
+<span class="kw">end</span></code></pre>
+<p>To provide an example of using this relationship...locate a <code>Director</code> that does not yet have a residence.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director=<span class="dt">Director</span>.where(<span class="st">:residence=</span>&gt;{<span class="st">:$exists=</span>&gt;<span class="dv">0</span>}).first
+ =&gt; <span class="co">#&lt;Director _id: nm0001081, name: &quot;Cameron Crowe&quot;, residence_id: nil&gt; </span>
+&gt; pp <span class="dt">Director</span>.collection.find(<span class="st">:_id=</span>&gt;director.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span>}</code></pre>
+<p>Assign the <code>director.residence</code> to an instance of <code>Place</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; oakland=<span class="dt">Place</span>.where(<span class="st">:city=</span>&gt;<span class="st">&quot;Oakland&quot;</span>).first
+ =&gt; <span class="co">#&lt;Place _id: Oakland, CA, USA, &gt; </span>
+&gt; director.residence=oakland
+ =&gt; <span class="co">#&lt;Place _id: Oakland, CA, USA, &gt; </span></code></pre>
+<p>Notice this did not immediately write anything to the database. The foreign key to the <code>Place</code> is writen when the <code>Director</code> is saved.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; pp <span class="dt">Director</span>.collection.find(<span class="st">:_id=</span>&gt;director.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span>}
+ =&gt; {<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span>} 
+
+&gt; director.save
+&gt; pp <span class="dt">Director</span>.collection.find(<span class="st">:_id=</span>&gt;director.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span>, <span class="st">:residence_id=</span>&gt;<span class="st">&quot;Oakland, CA, USA&quot;</span>}</code></pre>
+<p>There are many helper methods for this relationship, so I will pick out a few and shoot for some that do not overlap with the embedded ones covered earlier.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director.methods.grep(<span class="ot">/residence/</span>).count
+ =&gt; <span class="dv">17</span> </code></pre>
+<p>Realize the related object is now in a separate collection and the <code>Director</code> only has a foreign key stored locally to that related document. Therefore, accessing any properties related to the <code>Place</code> causes a separate query to the database since there is no such thing as a join performed within the database within MongoDB.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director=<span class="dt">Director</span>.find(director.id)
+<span class="dt">DEBUG</span> | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;directors&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0001081&quot;</span>}}
+ =&gt; <span class="co">#&lt;Director _id: nm0001081, name: &quot;Cameron Crowe&quot;, residence_id: &quot;Oakland, CA, USA&quot;&gt;</span>
+
+&gt; director.residence.state
+<span class="dt">DEBUG</span> | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;places&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;Oakland, CA, USA&quot;</span>}}
+ =&gt; <span class="st">&quot;CA&quot;</span> </code></pre>
+<p>However, if all you want to access is the foreign key stored in the child document, you can call <code>(relation name)_id</code> and not have to access the parent collection.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director.residence_id
+ =&gt; <span class="st">&quot;Oakland, CA, USA</span></code></pre>
+<p>If you have the foreign key for the parent document...</p>
+<pre><code>&gt; director=Director.find(director.id)
+ =&gt; #&lt;Director _id: nm0001081, name: &quot;Cameron Crowe&quot;, residence_id: &quot;Oakland, CA, USA&quot;&gt; 
+&gt; la_id=Place.where(:city=&gt;&quot;LA&quot;).first.id
+ =&gt; &quot;Los Angeles, CA, USA&quot; </code></pre>
+<p>...the assignment can be made using <code>(relation name)_id=</code> instead of getting an instance of the parent to form the relationship.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director.residence_id=la_id
+ =&gt; <span class="st">&quot;Los Angeles, CA, USA&quot;</span> 
+&gt; director.save
+&gt; pp <span class="dt">Director</span>.collection.find(<span class="st">:_id=</span>&gt;director.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001081&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Cameron Crowe&quot;</span>,
+ <span class="st">:residence_id=</span>&gt;<span class="st">&quot;Los Angeles, CA, USA&quot;</span>}</code></pre>
+<h3 id="m-embedded-movie---rolesmovierole">1:M Embedded (<code>Movie &lt;-&gt; roles:MovieRole</code>)</h3>
+<p>For the 1:M embedded we have a single document with parent properties and multiple embedded children and the children have identities.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt0075148&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky&quot;</span>,
+ <span class="st">:roles=</span>&gt;
+  [{<span class="st">:actorName=</span>&gt;<span class="st">&quot;Sylvester Stallone&quot;</span>,
+    <span class="st">:character=</span>&gt;<span class="st">&quot;Rocky&quot;</span>,
+    <span class="st">:main=</span>&gt;<span class="dv">true</span>,
+    ...
+    <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000230&quot;</span>},
+   {<span class="st">:actorName=</span>&gt;<span class="st">&quot;Talia Shire&quot;</span>,
+    <span class="st">:character=</span>&gt;<span class="st">&quot;Adrian&quot;</span>,
+    <span class="st">:main=</span>&gt;<span class="dv">true</span>,
+    ...
+    <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0001735&quot;</span>},
+    ...]
+}</code></pre>
+<p>The parent declares an <code>embeds_many</code>, listing the collection name and the <code>class_name</code> of the embedded child if it does not match the singular form of the collection name.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:title</span>, type: <span class="dt">String</span>
+  ...
+  embeds_many <span class="st">:roles</span>, class_name:<span class="st">&quot;MovieRole&quot;</span>
+  ...
+<span class="kw">end</span></code></pre>
+<p>The child class delcares an <code>embedded_in</code>, listing the parent property. In this case the name of the property and name of the parent model class match -- so no <code>class_name</code> is necessary.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">MovieRole</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:character</span>, type: <span class="dt">String</span>
+  field <span class="st">:actorName</span>, as: <span class="st">:actor_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:main</span>, type: <span class="dt">Mongoid</span>::<span class="dt">Boolean</span>
+  ...
+  embedded_in <span class="st">:movie</span>
+  ...
+<span class="kw">end</span></code></pre>
+<p>We can demonstrate the 1:M embedded by first creating a new <code>Movie</code>. The <code>create</code> method performs the combined function of <code>new/initialize</code> and <code>save</code> and the parent document must be saved before creating embedded objects (i.e., saving to database).</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky25=<span class="dt">Movie</span>.create(<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000000&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>)</code></pre>
+<p>We find an actor to play a role in the movie and then create that role relative to the collection. That immediately updates the parent document with the embedded role. Since this is a 1:M relationship, the role is placed within an array.</p>
+<pre class="ruby."><code>&gt; stallone=Actor.where(:name=&gt;{:$regex=&gt;&quot;Stallone&quot;}).first
+&gt; rocky=rocky25.roles.create(:_id=&gt;stallone.id, :character=&gt;&quot;Rocky&quot;, :actorName=&gt;&quot;Sly&quot;, :main=&gt;true)
+&gt; pp Movie.collection.find(:title=&gt;&quot;Rocky XXV&quot;).first
+{&quot;_id&quot;=&gt;&quot;tt9000000&quot;,
+ &quot;title&quot;=&gt;&quot;Rocky XXV&quot;,
+ &quot;roles&quot;=&gt;
+  [{&quot;_id&quot;=&gt;&quot;nm0000230&quot;,
+    &quot;character&quot;=&gt;&quot;Rocky&quot;,
+    &quot;actorName&quot;=&gt;&quot;Sly&quot;,
+    &quot;main&quot;=&gt;true}]}</code></pre>
+<p>To add a second role -- we locate another actor and fill in the details of the role using a transient instance and then add the instance to the collection. The addition to the collection immediately updates the state of the parent document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; actor=<span class="dt">Actor</span>.first
+&gt; role=<span class="dt">MovieRole</span>.new
+&gt; role.id=actor.id
+&gt; role.character=<span class="st">&quot;Challenger&quot;</span>
+&gt; role.main=<span class="dv">false</span>
+&gt; role.actor_name=actor.name
+&gt; rocky25.roles &lt;&lt; role
+
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000000&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>,
+ <span class="st">:roles=</span>&gt;
+  [{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000230&quot;</span>, <span class="st">:character=</span>&gt;<span class="st">&quot;Rocky&quot;</span>, <span class="st">:actorName=</span>&gt;<span class="st">&quot;Sly&quot;</span>, <span class="st">:main=</span>&gt;<span class="dv">true</span>},
+   {<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0084430&quot;</span>,
+    <span class="st">:character=</span>&gt;<span class="st">&quot;Challenger&quot;</span>,
+    <span class="st">:main=</span>&gt;<span class="dv">false</span>,
+    <span class="st">:actorName=</span>&gt;<span class="st">&quot;Erwin Biswanger&quot;</span>}]}</code></pre>
+<p>We can repeat the example -- except this time form the entire parent document prior to the intial save.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26=<span class="dt">Movie</span>.new(<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>)
+&gt; rocky=rocky26.roles.build(<span class="st">:_id=</span>&gt;stallone.id, <span class="st">:character=</span>&gt;<span class="st">&quot;Rocky&quot;</span>, <span class="st">:actorName=</span>&gt;<span class="st">&quot;Sly&quot;</span>, <span class="st">:main=</span>&gt;<span class="dv">true</span>)
+&gt; rocky26.roles &lt;&lt; role
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>).first
+<span class="dv">nil</span></code></pre>
+<p>At the point we have the transient object fully formed and now will save to the database.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.save
+ =&gt; <span class="dv">true</span> 
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>).first
+{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">&quot;title&quot;</span>=&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">&quot;roles&quot;</span>=&gt;
+  [{<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0000230&quot;</span>,
+    <span class="st">&quot;character&quot;</span>=&gt;<span class="st">&quot;Rocky&quot;</span>,
+    <span class="st">&quot;actorName&quot;</span>=&gt;<span class="st">&quot;Sly&quot;</span>,
+    <span class="st">&quot;main&quot;</span>=&gt;<span class="dv">true</span>},
+   {<span class="st">&quot;_id&quot;</span>=&gt;<span class="st">&quot;nm0084430&quot;</span>,
+    <span class="st">&quot;character&quot;</span>=&gt;<span class="st">&quot;Challenger&quot;</span>,
+    <span class="st">&quot;main&quot;</span>=&gt;<span class="dv">false</span>,
+    <span class="st">&quot;actorName&quot;</span>=&gt;<span class="st">&quot;Erwin Biswanger&quot;</span>}]}</code></pre>
+<p>Another interesting feature is that the embedded object can provide a reference to its parent document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; role.movie.title
+ =&gt; <span class="st">&quot;Rocky XXVI&quot;</span></code></pre>
+<h3 id="m1-embedded-linked-movierole---actor">M:1 Embedded Linked (<code>MovieRole &lt;-&gt; Actor</code>)</h3>
+<p>Although not technically an official relationship type, it is a common pattern when linking documents within MongoDB to maintain a certain amount of state about the link on the source side. This is sometimes called an <code>annotated link</code>. There are many actors in a movie, but each of those actors play a specific role that is important and specific to the movie. Elsewhere in this description you found that <code>MovieRole</code> was embedded in <code>Movie</code> to describe the role played by an <code>Actor</code>. That <code>MovieRole</code> also contained cached information about the <code>Actor</code>. We will now look at the M:1 relationship between the embedded <code>MovieRole</code> and <code>Actor</code>.</p>
+<p>As described -- the one side has a primary key and typically no reference to the child within the document. That is true about the following parent document (<code>Actor</code>).</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000354&quot;</span>,
+ <span class="st">:birthName=</span>&gt;<span class="st">&quot;Matthew Paige Damon&quot;</span>,
+ <span class="st">:height=</span>&gt;{<span class="st">:amount=</span>&gt;<span class="fl">5.8398952</span>, <span class="st">:units=</span>&gt;<span class="st">&quot;feet&quot;</span>},
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Matt Damon&quot;</span>,
+ <span class="st">:date_of_birth=</span>&gt;<span class="dv">1970-10-08</span> <span class="dv">00</span>:<span class="dv">00</span>:<span class="dv">00</span> <span class="dt">UTC</span>,
+  ...
+ <span class="st">:place_of_birth=</span>&gt;
+  {<span class="st">:_id=</span>&gt;<span class="st">&quot;Boston, MA, USA&quot;</span>,
+   <span class="st">:geolocation=</span>&gt;{<span class="st">:type=</span>&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">:coordinates=</span>&gt;[-<span class="fl">71.0588801</span>, <span class="fl">42.3600825</span>]},
+   <span class="st">:city=</span>&gt;<span class="st">&quot;Boston&quot;</span>,
+   <span class="st">:county=</span>&gt;<span class="st">&quot;Suffolk County&quot;</span>,
+   <span class="st">:state=</span>&gt;<span class="st">&quot;MA&quot;</span>,
+   <span class="st">:country=</span>&gt;<span class="st">&quot;US&quot;</span>}}</code></pre>
+<p>The many side will typically host the foreign key. That is true with <code>MovieRole</code>, but there is some complexity in hosting the foreign key in the embedded document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt0440963&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;The Bourne Ultimatum&quot;</span>,
+ ...
+ <span class="st">:roles=</span>&gt;
+  [{<span class="st">:actorName=</span>&gt;<span class="st">&quot;Matt Damon&quot;</span>,
+    <span class="st">:character=</span>&gt;<span class="st">&quot;Jason Bourne&quot;</span>,
+    <span class="st">:main=</span>&gt;<span class="dv">true</span>,
+    ...
+    <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000354&quot;</span>},
+  ...
+}</code></pre>
+<p>We are able to add the <code>belongs_to</code> relation to <code>MovieRole</code> and map that to the <code>_id</code> field (instead of the default <code>actor_id</code>).</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">MovieRole</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:character</span>, type: <span class="dt">String</span>
+  field <span class="st">:actorName</span>, as: <span class="st">:actor_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:main</span>, type: <span class="dt">Mongoid</span>::<span class="dt">Boolean</span>
+  embedded_in <span class="st">:movie</span>
+  ...
+  belongs_to <span class="st">:actor</span>, <span class="st">:foreign_key</span> =&gt; <span class="st">:_id</span>
+  ...
+<span class="kw">end</span></code></pre>
+<p>However, we are unable to declare a <code>has_many</code> to an embedded class. We are forced to write some application logic and take a peek at queries. In the <code>roles</code> method below, we first search for all movies for the actor, iterate through those movie documents and implement a follow-on queuy to locate a specific role within the movie. In watching the database interactions through debug -- it actually looks like all work is done within Mongoid to locate the result of the second query.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Actor</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+
+  <span class="co">#not supported</span>
+  <span class="co">#has_many roles:, class_name: &#39;MovieRole`</span>
+  <span class="co">#replaced with</span>
+  <span class="kw">def</span> roles
+    <span class="dt">Movie</span>.where(:<span class="st">&quot;roles._id&quot;</span>=&gt;<span class="dv">self</span>.id)
+         .map {|m| m.roles.where(<span class="st">:_id=</span>&gt;<span class="dv">self</span>.id).first}
+  <span class="kw">end</span>  
+<span class="kw">end</span></code></pre>
+<p>To demonstrate the relationship, lets locate an actor that we know should have many roles.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; damon=<span class="dt">Actor</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Matt Da&quot;</span>}).first</code></pre>
+<p>We can search for a nested <code>roles._id</code> field matching the actor.id value. That gives us a list of the movies the actor has played in.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; movie=<span class="dt">Movie</span>.where(:<span class="st">&quot;roles._id&quot;</span>=&gt;damon.id).first</code></pre>
+<p>From there we can locate a specific role having the actor's ID and show that the role has the foreign key to the actor.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; role=movie.roles.where(<span class="st">:id=</span>&gt;damon.id).first
+&gt; pp role.attributes
+{<span class="st">:actorName=</span>&gt;<span class="st">&quot;Matt Damon&quot;</span>,
+ <span class="st">:character=</span>&gt;<span class="st">&quot;Jason Bourne&quot;</span>,
+ <span class="st">:main=</span>&gt;<span class="dv">true</span>,
+ ...
+ <span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000354&quot;</span>}</code></pre>
+<p>We can bundle that query information and application logic into the following <code>roles</code> instance method to give us all roles.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> roles
+    <span class="dt">Movie</span>.where(:<span class="st">&quot;roles._id&quot;</span>=&gt;<span class="dv">self</span>.id)
+         .map {|m| m.roles.where(<span class="st">:_id=</span>&gt;<span class="dv">self</span>.id).first}
+  <span class="kw">end</span>  </code></pre>
+<p>With all roles, we can go from the actor to each movie.role to locate each movie and associated character they have played.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; damon.roles.map {|role| <span class="st">&quot;</span><span class="ot">#{</span>role.movie.title<span class="ot">}</span><span class="st"> =&gt; </span><span class="ot">#{</span>role.character<span class="ot">}</span><span class="st">&quot;</span> }
+ =&gt; [<span class="st">&quot;The Bourne Ultimatum =&gt; Jason Bourne&quot;</span>, <span class="st">&quot;Good Will Hunting =&gt; Will Hunting&quot;</span>, 
+     <span class="st">&quot;The Martian =&gt; Mark Watney&quot;</span>, <span class="st">&quot;Saving Private Ryan =&gt; Private Ryan&quot;</span>] </code></pre>
+<p>In forming the relationship, lets add the actor to a fake role in a fake movie.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; damon=<span class="dt">Actor</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Matt Da&quot;</span>}).first
+&gt; rocky26=<span class="dt">Movie</span>.create(<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>)
+
+&gt; rocky=rocky26.roles.create(<span class="st">:_id=</span>&gt;damon.id, <span class="st">:character=</span>&gt;<span class="st">&quot;Rocky&quot;</span>, <span class="st">:actorName=</span>&gt;<span class="st">&quot;Matt&quot;</span>, <span class="st">:main=</span>&gt;<span class="dv">true</span>)
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">:roles=</span>&gt;
+  [{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000354&quot;</span>, <span class="st">:character=</span>&gt;<span class="st">&quot;Rocky&quot;</span>, <span class="st">:actorName=</span>&gt;<span class="st">&quot;Matt&quot;</span>, <span class="st">:main=</span>&gt;<span class="dv">true</span>}]}</code></pre>
+<p>Now we can go in an search for roles that are part of their newly assignment movie and return the movie <code>title</code> and <code>character</code> they will be playing.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; damon.roles.select{|role| <span class="ot">/Rocky/</span>=~role.movie.title} \
+             .map {|role| <span class="st">&quot;</span><span class="ot">#{</span>role.movie.title<span class="ot">}</span><span class="st"> =&gt; </span><span class="ot">#{</span>role.character<span class="ot">}</span><span class="st">&quot;</span> }
+ =&gt; [<span class="st">&quot;Rocky XXVI =&gt; Rocky&quot;</span>]</code></pre>
+<h3 id="linked-movie---sequel_tomovie">1:1 Linked (<code>Movie -&gt; sequel_to:Movie</code>)</h3>
+<p>The 1:1 linked relationship has the same parent/child relationship as the 1:M, except that there is only a single child. In this example we create a recursive relationship between movies where each <code>sequel</code> <code>Movie</code> contains the foreign key to its parent <code>Movie</code> it is a <code>sequel_to</code>. The child class storing the foreign key declares <code>belongs_to</code> and the parent class defines <code>has_one</code> if the relationship is bi-directional. Since neither property matches the name <code>Movie</code>, they both have to declare a <code>class_name</code> to indicate what is at the other end of the relationship.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000000&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>,
+ <span class="st">:roles=</span>&gt; ... }
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">:roles=</span>&gt; ...
+ <span class="st">:sequel_to_id=</span>&gt;<span class="st">&quot;tt9000000&quot;</span>}</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:title</span>, type: <span class="dt">String</span>
+  ...
+  has_one <span class="st">:sequel</span>, class_name:<span class="st">&quot;Movie&quot;</span>
+  belongs_to <span class="st">:sequel_to</span>, class_name:<span class="st">&quot;Movie&quot;</span>
+  ...
+<span class="kw">end</span></code></pre>
+<p>Using the definition above we would automatically get a foreign key document key of <code>sequel_to_id</code>. You can map that to any other field name except <code>sequel_to</code> using <code>foreign_key: :other_field_name</code>. Even when defining the <code>foreign_key: :sequel_to</code>, Mongoid will use <code>:sequel_to_id</code>. If we truely want that name to be the key in the document we can work around it by changing the model class relation name to be different from the document key.</p>
+<p>To demonstrate the relationship we will locate a <code>Movie</code> and its <code>sequel</code>. The parent movie is assigned to the <code>sequel_to</code> property of the child. This updates the in-memory state of the <code>sequel</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky25=<span class="dt">Movie</span>.where(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>).first 
+&gt; rocky26=<span class="dt">Movie</span>.where(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>).first
+&gt; rocky26.sequel_to=rocky25
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">:roles=</span>&gt; ...</code></pre>
+<p>The in-memory state of the sequel is written to the database during the next save. You can see the foreign key when the document is printed.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.save
+ =&gt; <span class="dv">true</span> 
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">:roles=</span>&gt; ...
+ <span class="st">:sequel_to_id=</span>&gt;<span class="st">&quot;tt9000000&quot;</span>}</code></pre>
+<p>No state is written to the parent document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000000&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXV&quot;</span>,
+ <span class="st">:roles=</span>&gt; ...  }</code></pre>
+<p>Note that one can navigate the relationship in both directions.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.sequel_to.title
+ =&gt; <span class="st">&quot;Rocky XXV&quot;</span> 
+&gt; rocky26.sequel_to.sequel.title
+ =&gt; <span class="st">&quot;Rocky XXVI&quot;</span> </code></pre>
+<h3 id="mm-movie---writerswriter">M:M (<code>Movie &lt;-&gt; writers:Writer</code>)</h3>
+<p>In a many-to-many bi-directional relationship, each side has an important primary key and the other side stores that as a foreign key in an collection. In the example, The <code>Movie</code> has primary key (<code>tt0091763</code>) and a collection of foreign keys to its <code>Writers</code> (collection with just one - <code>[&quot;nm0000231&quot;]</code>).</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">movie:
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt0091763&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Platoon&quot;</span>, <span class="st">:writer_ids=</span>&gt;[<span class="st">&quot;nm0000231&quot;</span>]}</code></pre>
+<p>The <code>Writer</code> has a primary key (<code>nm0000231</code>) that matches one of the elements in the related movie. It too has a collection of foreign keys. The collection of foreign keys in the <code>Writer</code> are foreign keys to the <code>Movie</code> documents (<code>[..., &quot;tt0091763&quot;]</code>)</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">writer:
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>,
+ <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>]}</code></pre>
+<p>Both sides of the relationship declare a <code>has_and_belongs_to_many</code> with the name of the relationship. The long word has two meanings; <code>has_many</code> and <code>belongs_to</code>. The <code>belongs_to</code> aspect stores the foreign key to the parent document and the <code>has_many</code> means it is the parent of many child documents. When we bring the two concepts together -- the <code>has_many</code> and <code>belongs_to</code> are both feed off the local collection of document foreign keys.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+  embeds_one <span class="st">:hometown</span>, as: <span class="st">:locatable</span>, class_name: <span class="st">&#39;Place&#39;</span>
+  ...
+  has_and_belongs_to_many <span class="st">:movies</span>
+  ...
+<span class="kw">end</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:title</span>, type: <span class="dt">String</span>
+  ...
+  has_and_belongs_to_many <span class="st">:writers</span>
+  ...
+<span class="kw">end</span></code></pre>
+<p>To look at our bi-directional, many-to-many relationship, we can get the movie properties by navigating a relationship from the writer.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; stone=<span class="dt">Writer</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Stone&quot;</span>}).first
+&gt; stone.movies.map {|m| m.title}
+ =&gt; [<span class="st">&quot;Scarface&quot;</span>, <span class="st">&quot;Platoon&quot;</span>] </code></pre>
+<p>We can also go the other way. In this example we add a <code>hometown</code> property to the writer and get the hometown through a reference from the movie.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; stone=<span class="dt">Writer</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Stone&quot;</span>}).first
+&gt; nyc=<span class="dt">Place</span>.where(<span class="st">:_id=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;^New York, NY&quot;</span>}).first
+&gt; stone.create_hometown(nyc.attributes)
+&gt; platoon=<span class="dt">Movie</span>.where(<span class="st">:title=</span>&gt;<span class="st">&quot;Platoon&quot;</span>).first
+&gt; platoon.writers.first.hometown.id
+ =&gt; <span class="st">&quot;New York, NY, USA&quot;</span> </code></pre>
+<p>To demonstrate creating a many-to-many relationship, lets create a new movie which we can verify has no writers at this point.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26=<span class="dt">Movie</span>.create(<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>)
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:_id=</span>&gt;rocky26.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>}</code></pre>
+<p>Lets go out and find a writer and notice the writer has already written two movies.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; stone=<span class="dt">Writer</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Stone&quot;</span>}).first
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;stone.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>,
+ <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>]}</code></pre>
+<p>Add the writer to the collection of movie writers.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.writers &lt;&lt; stone
+ =&gt; [<span class="co">#&lt;Writer _id: nm0000231, name: &quot;Oliver Stone&quot;, movie_ids: [&quot;tt0086250&quot;, &quot;tt0091763&quot;, &quot;tt9000001&quot;]&gt;] </span></code></pre>
+<p>Notice that Mongoid has updated both ends of the collection with the foreign key of the other.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:_id=</span>&gt;rocky26.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>, <span class="st">:writer_ids=</span>&gt;[<span class="st">&quot;nm0000231&quot;</span>]}
+ =&gt; {<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>, <span class="st">:writer_ids=</span>&gt;[<span class="st">&quot;nm0000231&quot;</span>]} 
+
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;stone.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>,
+ <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>, <span class="st">&quot;tt9000001&quot;</span>]}
+ =&gt; {<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>, <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>, <span class="st">&quot;tt9000001&quot;</span>]} </code></pre>
+<p>Great! We can use both references to locate information about the other simply by walking the relationship.</p>
+<pre><code>&gt; stone.movies.map{|m| m.title}
+ =&gt; [&quot;Scarface&quot;, &quot;Platoon&quot;, &quot;Rocky XXVI&quot;] 
+
+&gt; rocky26.writers.map{|w| w.name}
+ =&gt; [&quot;Oliver Stone&quot;] </code></pre>
+<p>Notice that when the relationship is removed from one end -- it is also removed from the other end.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; stone.movies.delete rocky26
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;stone.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>,
+ <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>]}
+ =&gt; {<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>, <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>, <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>]} 
+
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:_id=</span>&gt;rocky26.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>, <span class="st">:writer_ids=</span>&gt;[]}
+ =&gt; {<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>, <span class="st">:writer_ids=</span>&gt;[]} </code></pre>
+<h3 id="timestamps">Timestamps</h3>
+<p>Timestamp information is not added by default in Mongoid -- as it is within ActiveRecord. To add <code>created_at</code> and <code>updated_at</code> fields and management, we add an additional <code>Mongoid::Timestamps</code> mixin.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Timestamps</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Timestamps</span></code></pre>
+<p>Lets demonstrate the timestamp capability by re-doing the M:M relationship scenario and create our movie again with timestamps in place. Notice that two new elements have been introduced to the document for <code>created_at</code> and <code>updated_at</code>. We can also get these explicitly from the object.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26=<span class="dt">Movie</span>.create(<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>)
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:_id=</span>&gt;rocky26.id)
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">:updated_at=</span>&gt;<span class="dv">2015-11-28</span> <span class="dv">20</span>:<span class="dv">47</span>:<span class="dv">59</span> <span class="dt">UTC</span>,
+ <span class="st">:created_at=</span>&gt;<span class="dv">2015-11-28</span> <span class="dv">20</span>:<span class="dv">47</span>:<span class="dv">59</span> <span class="dt">UTC</span>}
+&gt; rocky26.created_at
+ =&gt; <span class="dt">Sat</span>, <span class="dv">28</span> <span class="dt">Nov</span> <span class="dv">2015</span> <span class="dv">20</span>:<span class="dv">47</span>:<span class="dv">59</span> <span class="dt">UTC</span> +<span class="dv">00</span>:<span class="dv">00</span> 
+&gt; rocky26.updated_at
+ =&gt; <span class="dt">Sat</span>, <span class="dv">28</span> <span class="dt">Nov</span> <span class="dv">2015</span> <span class="dv">20</span>:<span class="dv">47</span>:<span class="dv">59</span> <span class="dt">UTC</span> +<span class="dv">00</span>:<span class="dv">00</span> </code></pre>
+<p><code>updated_at</code> will be modified as the document is changed and saved.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.year=<span class="dv">2015</span>
+ =&gt; <span class="dv">2015</span> 
+&gt; rocky26.save
+ =&gt; <span class="dv">true</span> 
+&gt; rocky26.updated_at
+ =&gt; <span class="dt">Sat</span>, <span class="dv">28</span> <span class="dt">Nov</span> <span class="dv">2015</span> <span class="dv">20</span>:<span class="dv">48</span>:<span class="dv">28</span> <span class="dt">UTC</span> +<span class="dv">00</span>:<span class="dv">00</span> </code></pre>
+<p>The writer was imported prior to timestamps being configured and does not have a <code>created_at</code> and <code>updated_at</code> to start with.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; stone=<span class="dt">Writer</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Stone&quot;</span>}).first
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;stone.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>,
+ <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>]}</code></pre>
+<p>If we add the writer to the movie, the writer receives an <code>updated_at</code> timestamp.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.writers &lt;&lt; stone
+&gt; pp <span class="dt">Writer</span>.collection.find(<span class="st">:_id=</span>&gt;stone.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;nm0000231&quot;</span>,
+ <span class="st">:name=</span>&gt;<span class="st">&quot;Oliver Stone&quot;</span>,
+ <span class="st">:movie_ids=</span>&gt;[<span class="st">&quot;tt0086250&quot;</span>, <span class="st">&quot;tt0091763&quot;</span>, <span class="st">&quot;tt9000001&quot;</span>],
+ <span class="st">:updated_at=</span>&gt;<span class="dv">2015-11-28</span> <span class="dv">20</span>:<span class="dv">53</span>:<span class="dv">55</span> <span class="dt">UTC</span>}</code></pre>
+<p>The odd thing found was that the source of the collection we navigated from does not get an <code>updated_at</code> change -- even when issuing save. This was found to be true no matter which end we started from.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.updated_at
+ =&gt; <span class="dt">Sat</span>, <span class="dv">28</span> <span class="dt">Nov</span> <span class="dv">2015</span> <span class="dv">20</span>:<span class="dv">48</span>:<span class="dv">28</span> <span class="dt">UTC</span> +<span class="dv">00</span>:<span class="dv">00</span> 
+
+&gt; pp <span class="dt">Movie</span>.collection.find(<span class="st">:_id=</span>&gt;rocky26.id).first
+{<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>,
+ <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>,
+ <span class="st">:updated_at=</span>&gt;<span class="dv">2015-11-28</span> <span class="dv">20</span>:<span class="dv">48</span>:<span class="dv">28</span> <span class="dt">UTC</span>,
+ <span class="st">:created_at=</span>&gt;<span class="dv">2015-11-28</span> <span class="dv">20</span>:<span class="dv">47</span>:<span class="dv">59</span> <span class="dt">UTC</span>,
+ <span class="st">:year=</span>&gt;<span class="dv">2015</span>,
+ <span class="st">:writer_ids=</span>&gt;[<span class="st">&quot;nm0000231&quot;</span>]}</code></pre>
+<p>The object, can of course, be manually updated with a <code>touch</code> command.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky26.touch
+&gt; rocky26.updated_at
+ =&gt; <span class="dt">Sat</span>, <span class="dv">28</span> <span class="dt">Nov</span> <span class="dv">2015</span> <span class="dv">21</span>:<span class="dv">00</span>:<span class="bn">05</span> <span class="dt">UTC</span> +<span class="dv">00</span>:<span class="dv">00</span> </code></pre>
+<p>If we introduce a <code>touch</code> propagation property to the relationship we can get the <code>touch</code> command to cascade across the relationship. However, it appears that type of property is only available when the source of the <code>touch</code> has a single foreign key stored in its document. To demonstrate, we added the mixin to <code>Actor</code> and add the <code>touch</code> property to <code>MovieRole</code>.</p>
+<pre><code>class Actor
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  field :name, type: String
+  ...
+end</code></pre>
+<pre><code>class MovieRole
+  include Mongoid::Document
+  field :character, type: String
+  embedded_in :movie
+  ...
+  belongs_to :actor, foreign_key: :_id, touch: true
+  ...
+end</code></pre>
+<p>Our scenario starts off with an actor with no concept of when they were created or last updated. When we add a relationship to them from MovieRole (annotated with <code>touch: true</code>), the <code>updated_at</code> time of the actor is automatically updated.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">rocky26=<span class="dt">Movie</span>.create(<span class="st">:_id=</span>&gt;<span class="st">&quot;tt9000001&quot;</span>, <span class="st">:title=</span>&gt;<span class="st">&quot;Rocky XXVI&quot;</span>)
+&gt; damon=<span class="dt">Actor</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Matt Da&quot;</span>}).first                                                  
+&gt; damon.created_at
+ =&gt; <span class="dv">nil</span> 
+&gt; damon.updated_at
+ =&gt; <span class="dv">nil</span> 
+&gt; rocky=rocky26.roles.create(<span class="st">:actor=</span>&gt;damon, <span class="st">:character=</span>&gt;<span class="st">&quot;Rocky&quot;</span>, <span class="st">:actorName=</span>&gt;<span class="st">&quot;Matt&quot;</span>, <span class="st">:main=</span>&gt;<span class="dv">true</span>)
+&gt; damon.updated_at
+ =&gt; <span class="dt">Sat</span>, <span class="dv">28</span> <span class="dt">Nov</span> <span class="dv">2015</span> <span class="dv">21</span>:<span class="dv">18</span>:<span class="dv">38</span> <span class="dt">UTC</span> +<span class="dv">00</span>:<span class="dv">00</span> </code></pre>
+<h3 id="constraints-and-validation">Constraints and Validation</h3>
+<h3 id="field-validation">Field Validation</h3>
+<p>ActiveModel validations can be added to Mongoid model classes. In the following example we declare that <code>name</code> must be present in the document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Director</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+  ...
+  validates_presence_of <span class="st">:name</span>
+<span class="kw">end</span></code></pre>
+<p>To test our validation, we can attempt to create a new <code>Director</code> without a name.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director=<span class="dt">Director</span>.create(<span class="st">:_id=</span>&gt;<span class="st">&quot;12345&quot;</span>)
+ =&gt; <span class="co">#&lt;Director _id: 12345, name: nil, residence_id: nil&gt; </span></code></pre>
+<p>Everything was quiet, but when we check for errors, we see that name cannot be blank.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director.errors.count
+ =&gt; <span class="dv">1</span> 
+&gt; director.errors
+ =&gt; <span class="co">#&lt;ActiveModel::Errors:0x000000088ad830 @base=#&lt;Director _id: 12345, name: nil, </span>
+    residence_id: <span class="dv">nil</span>&gt;, <span class="ot">@messages</span>={<span class="st">:name=</span>&gt;[<span class="st">&quot;can&#39;t be blank&quot;</span>]}&gt; </code></pre>
+<p>If we want an exception thrown instead, we add the bang (&quot;!&quot;) character to the <code>create()</code> method to have Mongoid immediately throw an exception when encountering a validation error.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; director=<span class="dt">Director</span>.create!(<span class="st">:_id=</span>&gt;<span class="st">&quot;12345&quot;</span>)
+<span class="dt">Mongoid</span>::<span class="dt">Errors</span>::<span class="dt">Validations</span>: 
+message:
+  <span class="dt">Validation</span> of <span class="dt">Director</span> failed.
+summary:
+  <span class="dt">The</span> following errors were found: <span class="dt">Name</span> can<span class="st">&#39;t be blank</span>
+<span class="st">resolution:</span>
+<span class="st">  Try persisting the document with valid data or remove the validations.</span></code></pre>
+<h3 id="relationship-constraints">Relationship Constraints</h3>
+<p>You can add dependency constraints to parents to inform Mongoid what to do with a child document when the parent the child is referencing is removed from the database. There are five(5) options when you include the default case. Cardinality of relationship does make a difference in some of the behavior.</p>
+<ul>
+<li>(default): Orphans the child document
+<ul>
+<li>1:1 and 1:M leaves the child with stale reference to the removed parent</li>
+<li>M:M clears the child of the parent reference (acts like <code>:nullify</code>)</li>
+</ul></li>
+<li>nullify: Orphan the child document after setting the child foreign key to nil</li>
+<li>destroy: Remove the child document after running model callbacks on the child</li>
+<li>delete: Remove the child document without running model callbacks on the child
+<ul>
+<li>M:M does not remove the child document from database (acts like <code>:nullify</code>)</li>
+</ul></li>
+<li>restrict: Raise an error if a child references the parent being removed</li>
+</ul>
+<p>The Mongoid documentation states <code>:nullify</code> is the default, but we have found a key difference in how <code>default</code> and <code>:nullify</code> leave the child orphaned for the non-M:M case as well as some of the activity performed with the database. For 1:1 annd 1:M cardinality relationships, the <code>default</code> case leaves the orphaned child untouched, with a stale foreign key reference to the removed parent. <code>:nullify</code> clears the foreign key from the child. Both will result in a <code>nil</code> parent returned when accessed, but there are differences in the database.</p>
+<p><code>:restrict</code> will throw an error in all cases if a child still exists with a foreign key reference to the parent being removed.</p>
+<p><code>:destroy</code> and <code>:delete</code> are functionally the same for 1:1 and 1:M relationships -- in that they remove the children when the parent gets deleted and will run/not-run callbacks on the children at that time depending on the whether <code>:delete</code> or <code>:destroy</code> is selected. We have found the M:M cardinality case to be different in this area. M:M <code>:delete</code> acts like <code>:nullify</code> and does not remove the child. You must use <code>:destroy</code> if you wish the child of an M:M relationship to be removed.</p>
+<h4 id="demonstration">Demonstration</h4>
+<p>Lets demonstrate with the <code>Movie</code> <code>sequel/sequel_to</code> 1:1 relationship (mapped using a custom FK <code>sequel_of</code>) and the <code>Movie</code>/<code>Writer</code> M:M relationship.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  has_and_belongs_to_many <span class="st">:writers</span>
+  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span>
+  belongs_to <span class="st">:sequel_to</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  has_and_belongs_to_many <span class="st">:movies</span></code></pre>
+<p>Lets follow the same script in each case. We are re-finding the parent movie so that we can start the relationship from scratch at the point of the removal.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">reload!
+rocky30=<span class="dt">Movie</span>.create(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky 30&quot;</span>)
+rocky31=<span class="dt">Movie</span>.create(<span class="st">:title=</span>&gt;<span class="st">&quot;Rocky 31&quot;</span>, <span class="st">:sequel_to=</span>&gt;rocky30)
+writer=rocky30.writers.create(<span class="st">:name=</span>&gt;<span class="st">&quot;A Writer&quot;</span>)
+rocky30.id
+<span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids
+<span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of
+<span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids
+rocky30=<span class="dt">Movie</span>.find(rocky30.id)
+rocky30.destroy
+<span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+<span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+<span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+<span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of  <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+<span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+<span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids <span class="kw">if</span> <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?</code></pre>
+<p>To clean-up, we can follow-up with</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">p <span class="dt">Movie</span>.where(<span class="st">:title=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Rocky 3[0-1]&quot;</span>}).delete_all; \
+<span class="dt">Writer</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;A Writer&quot;</span>}).delete_all</code></pre>
+<h4 id="callbacks">Callbacks</h4>
+<p>To add some clarity to relationship handling and the <code>delete</code> versus <code>destroy</code> case, we add some callbacks to the <code>Movie</code> and <code>Writer</code> model classes to be notified when the document is being removed from the database.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  before_destroy <span class="kw">do</span> |doc|
+    puts <span class="st">&quot;before_destroy Movie callback for </span><span class="ot">#{</span>doc.id<span class="ot">}</span><span class="st">, &quot;</span>\
+         <span class="st">&quot;sequel_to=</span><span class="ot">#{</span>doc.sequel_to<span class="ot">}</span><span class="st">, writers=</span><span class="ot">#{</span>doc.writer_ids<span class="ot">}</span><span class="st">&quot;</span>
+  <span class="kw">end</span>
+  after_destroy <span class="kw">do</span> |doc|
+    puts <span class="st">&quot;after_destroy Movie callback for </span><span class="ot">#{</span>doc.id<span class="ot">}</span><span class="st">, &quot;</span>\
+         <span class="st">&quot;sequel_to=</span><span class="ot">#{</span>doc.sequel_to<span class="ot">}</span><span class="st">, writers=</span><span class="ot">#{</span>doc.writer_ids<span class="ot">}</span><span class="st">&quot;</span>
+  <span class="kw">end</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  before_destroy <span class="kw">do</span> |doc|
+    puts <span class="st">&quot;before_destroy Writer callback for </span><span class="ot">#{</span>doc.id<span class="ot">}</span><span class="st">, &quot;</span>\
+        <span class="st">&quot;movies=</span><span class="ot">#{</span>doc.movie_ids<span class="ot">}</span><span class="st">&quot;</span>
+  <span class="kw">end</span>
+  after_destroy <span class="kw">do</span> |doc|
+    puts <span class="st">&quot;after_destroy Writer callback for </span><span class="ot">#{</span>doc.id<span class="ot">}</span><span class="st">, &quot;</span>\
+        <span class="st">&quot;movies=</span><span class="ot">#{</span>doc.movie_ids<span class="ot">}</span><span class="st">&quot;</span>
+  <span class="kw">end</span></code></pre>
+<p>Mongoid document states callbacks should be reserved for cross-cutting (e.g., send messages) behavior and and not business behavior. The documentation also states that the amount of callbacks should be limited within an object tree for performance reasons.</p>
+<p>Note the callbacks are called when <code>destroy</code> is called on the object.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Movie</span>.new.destroy
+before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 5680088fe301d06376000006, sequel_to=, writers=[]
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;5680088fe301d06376000006&#39;</span>)}...
+after_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 5680088fe301d06376000006, sequel_to=, writers=[]
+ =&gt; <span class="dv">true</span> 
+
+&gt; <span class="dt">Writer</span>.new.destroy
+before_destroy <span class="dt">Writer</span> callback <span class="kw">for</span> 56800908e301d06376000008, movies=[]
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56800908e301d06376000008&#39;</span>)}...
+after_destroy <span class="dt">Writer</span> callback <span class="kw">for</span> 56800908e301d06376000008, movies=[]
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>But not called when only <code>delete</code> is called.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Movie</span>.new.delete
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56800896e301d06376000007&#39;</span>)}...
+ =&gt; <span class="dv">true</span> 
+
+&gt; <span class="dt">Writer</span>.new.delete
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;5680090ce301d06376000009&#39;</span>)}...
+ =&gt; <span class="dv">true</span> </code></pre>
+<h4 id="relationship-constraints-dependent-destroy">Relationship Constraints: <code>dependent: :destroy</code></h4>
+<p>To immediately demonstrate callbacks, lets look at the <code>:destroy</code> case.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:writers</span>, dependent: <span class="st">:destroy</span>
+  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span>, dependent: <span class="st">:destroy</span></code></pre>
+<p>We start in our standard state.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky30.id
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>) 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)] 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>) 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)] 
+&gt; rocky30=<span class="dt">Movie</span>.find(rocky30.id)
+&gt; rocky30.destroy</code></pre>
+<p>The callbacks start with the parent object being called back.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56801498e301d06376000016, 
+   sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)]</code></pre>
+<p><code>Writer</code>s are retrieved by primary key (because the M:M relation stores the PK on the parent-side). The writer(s) are retrieved so that <code>destroy</code> callbacks could be issued and provided the document state during the callback. Each writer is removed from the database and the writer is also removed from the parent movies having that writer (including the one being removed in this case).</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;
+    {<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)]}}]}}
+before_destroy <span class="dt">Writer</span> callback <span class="kw">for</span> 56801498e301d06376000018, 
+    movies=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)]
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)}, ...
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{
+    <span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)]}}]}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$pull&quot;</span>=&gt;{<span class="st">&quot;writer_ids&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)}}...
+after_destroy <span class="dt">Writer</span> callback <span class="kw">for</span> 56801498e301d06376000018, 
+    movies=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)]</code></pre>
+<p>Sequel <code>Movie</code>s are located by foreign key (<code>sequel_of</code>), retrieved, and callbacks invoked. There is an extra call to the database in this case to locate the sequel of a sequel.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)}}
+before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56801498e301d06376000017, 
+    sequel_to=<span class="co">#&lt;Movie:0x00000005349130&gt;, writers=[]</span>
+D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000017&#39;</span>)}}
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000017&#39;</span>)},...
+after_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56801498e301d06376000017, 
+    sequel_to=<span class="co">#&lt;Movie:0x00000005349130&gt;, writers=[]</span></code></pre>
+<p>At this point, the parent <code>Movie</code> is removed and any writer still having a reference to this movie has their foreign key removed. This seems unnecessary, but remember this is all done outside of a transaction -- so redundant calls may be useful.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)},...
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{
+    <span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)]}}]}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$pull&quot;</span>=&gt;{<span class="st">&quot;movie_ids&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000016&#39;</span>)}},...
+after_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56801498e301d06376000016, 
+    sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801498e301d06376000018&#39;</span>)]
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>The parent and all children have been removed for the <code>dependent: :destroy</code> case.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">false</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">nil</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">false</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of  <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">nil</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; <span class="dv">false</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids <span class="kw">if</span> <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; <span class="dv">nil</span> </code></pre>
+<h4 id="relationship-constraints-dependent-delete">Relationship Constraints: <code>dependent: :delete</code></h4>
+<p>To further demonstrate callbacks, lets look at the <code>:delete</code> case. The two cases have primarily the same end functionality except that <code>:delete</code> does not invoke callbacks on the children. However, we do see a difference in how <code>:delete</code> and <code>:destroy</code> work for the M:M case.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:writers</span>, dependent: <span class="st">:delete</span>
+  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span>, dependent: <span class="st">:delete</span></code></pre>
+<p>We start in our standard state. The destroy callbacks are still invoked on the parent because we have called <code>destroy()</code> on the parent. The impact of our change should be restricted to what occurs for the child.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky30.id
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>) 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001b&#39;</span>)] 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>) 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>)] 
+&gt; rocky30=<span class="dt">Movie</span>.find(rocky30.id)
+&gt; rocky30.destroy
+before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56801c88e301d06376000019, 
+    sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001b&#39;</span>)]</code></pre>
+<p>Even though callbacks are not being called for the <code>Writer</code>s, each <code>Writer</code> to accessed by primary key using the values on the <code>Movie</code>-side.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{
+    <span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001b&#39;</span>)]}}]}}</code></pre>
+<p>Even though we are eventually removing the <code>Movie</code> and looking to remove dependents, it appears that the relationship is severed first. Each <code>Writer</code> is updated to have the <code>Movie</code> ID removed from its foreign key list. The <code>Movie</code> has its relationships cleared.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{
+    <span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001b&#39;</span>)]}}]}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$pull&quot;</span>=&gt;{<span class="st">&quot;movie_ids&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>)}}...
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>)}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$set&quot;</span>=&gt;{<span class="st">&quot;writer_ids&quot;</span>=&gt;[]}}...</code></pre>
+<p>Sequel processing causes each child <code>Movie</code> to be located by a foreign key to the parent being removed. An extra set of <code>Writer</code> and <code>Movie</code> sequel processing occurs for the child <code>Movie</code> (since it is also a <code>Movie</code>). The child movie is finally removed after all cleanup has been done for that type.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>)}}
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[]}}]}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$pull&quot;</span>=&gt;{<span class="st">&quot;movie_ids&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001a&#39;</span>)}},...
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001a&#39;</span>)}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$set&quot;</span>=&gt;{<span class="st">&quot;writer_ids&quot;</span>=&gt;[]}},...
+D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001a&#39;</span>)}}
+D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d0637600001a&#39;</span>)}...</code></pre>
+<p>At this point the parent <code>Movie</code> is removed.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56801c88e301d06376000019&#39;</span>)}...
+after_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56801c88e301d06376000019, 
+    sequel_to=, writers=[]
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>However -- one curious things is that the <code>Writer</code> was never removed. This is different behavior than the other relationship cardinalities and should be noted.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">false</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">nil</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">false</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of  <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">nil</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; <span class="dv">true</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids <span class="kw">if</span> <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; [] </code></pre>
+<h4 id="relationship-constraints-dependent-nullify">Relationship Constraints: <code>dependent: :nullify</code></h4>
+<p>To leave the children in place when removing the parent, we can switch the constraint to <code>:nullify</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:writers</span>, dependent: <span class="st">:nullify</span>
+  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span>, dependent: <span class="st">:nullify</span></code></pre>
+<p>We start in our standard state.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky30.id
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>) 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001e&#39;</span>)] 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>) 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>)] 
+&gt; rocky30=<span class="dt">Movie</span>.find(rocky30.id)
+&gt; rocky30.destroy
+before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 568022c9e301d0637600001c, 
+    sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001e&#39;</span>)]</code></pre>
+<p>The <code>Writers</code> are retrieved for some reason and followed up by the parent <code>Movie</code> being removed from <code>Writer</code> foreign key references. <code>Writer</code> references in the parent <code>Movie</code> to be removed are cleared as well. You will find that this M:M behavior is the same as in the <code>:delete</code> case.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{
+    <span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001e&#39;</span>)]}}]}}
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{
+    <span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001e&#39;</span>)]}}]}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$pull&quot;</span>=&gt;{<span class="st">&quot;movie_ids&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>)}}...
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>)}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$set&quot;</span>=&gt;{<span class="st">&quot;writer_ids&quot;</span>=&gt;[]}},...</code></pre>
+<p>Sequel <code>Movie</code>s are retrieved for some reason and then the database is cleared of the foreign key to the parent. The extra query is there to locate the sequel of the sequel.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>)}}
+D, | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001d&#39;</span>)}}
+D, | {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001d&#39;</span>)}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$set&quot;</span>=&gt;{<span class="st">&quot;sequel_of&quot;</span>=&gt;<span class="dv">nil</span>, <span class="st">&quot;updated_at&quot;</span>=&gt;<span class="dv">2015-12-27</span> <span class="dv">17</span>:<span class="dv">41</span>:<span class="dv">29</span> <span class="dt">UTC</span>}}...</code></pre>
+<p>At this point the parent movie is removed from the database.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, | {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568022c9e301d0637600001c&#39;</span>)}...
+after_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 568022c9e301d0637600001c, 
+    sequel_to=, writers=[]
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>None of the child documents are removed. They are orphaned with nil references to a parent.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">false</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">nil</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">true</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of  <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">nil</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; <span class="dv">true</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids <span class="kw">if</span> <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; [] </code></pre>
+<h4 id="relationship-constraints-dependent-default">Relationship Constraints: <code>dependent: (default)</code></h4>
+<p>To follow-up on the <code>default</code> case and how it is not exactly the same as the <code>:nullify</code> case in the database, we change to the following:</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:writers</span>
+  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span></code></pre>
+<p>We start in our standard state.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky30.id
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d0637600001f&#39;</span>) 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d06376000021&#39;</span>)] 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d0637600001f&#39;</span>) 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d0637600001f&#39;</span>)] 
+&gt; rocky30=<span class="dt">Movie</span>.find(rocky30.id)
+&gt; rocky30.destroy
+before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56802765e301d0637600001f, 
+    sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d06376000021&#39;</span>)]</code></pre>
+<p>Note the amount and type of callbacks is quite a bit different from the <code>:nullify</code> case. The parent <code>Movie</code> is removed from the database prior to anything being queried. This is then followed up with the relationship being removed from the M:M <code>Writer</code> relationship but not the <code>Movie</code> sequel relationship.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, {<span class="st">&quot;delete&quot;</span>=&gt;<span class="st">&quot;movies&quot;</span>, <span class="st">&quot;deletes&quot;</span>=&gt;[{<span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;_id&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d0637600001f&#39;</span>)},...
+D, {<span class="st">&quot;update&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;updates&quot;</span>=&gt;[{
+    <span class="st">&quot;q&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{<span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d06376000021&#39;</span>)]}}]}, 
+    <span class="st">&quot;u&quot;</span>=&gt;{<span class="st">&quot;$pull&quot;</span>=&gt;{<span class="st">&quot;movie_ids&quot;</span>=&gt;<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d0637600001f&#39;</span>)}},...
+after_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 56802765e301d0637600001f, 
+    sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d06376000021&#39;</span>)]
+ =&gt; <span class="dv">true</span> </code></pre>
+<p>The <code>Movie</code> sequel and <code>Writer</code> still exists and the <code>Writer</code> will end up in the <code>:nullify</code> state except thru much less work. The <code>Writer</code> ends up in an orphan state, like <code>:nullify</code> except that it is left referencing the parent that no longer exists.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="fl">2.2</span>.<span class="dv">2</span> :<span class="dv">151</span> &gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">false</span> 
+<span class="fl">2.2</span>.<span class="dv">2</span> :<span class="dv">152</span> &gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">nil</span> 
+<span class="fl">2.2</span>.<span class="dv">2</span> :<span class="dv">153</span> &gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">true</span> 
+<span class="fl">2.2</span>.<span class="dv">2</span> :<span class="dv">154</span> &gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of  <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;56802765e301d0637600001f&#39;</span>) 
+<span class="fl">2.2</span>.<span class="dv">2</span> :<span class="dv">155</span> &gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; <span class="dv">true</span> 
+<span class="fl">2.2</span>.<span class="dv">2</span> :<span class="dv">156</span> &gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids <span class="kw">if</span> <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; [] </code></pre>
+<h4 id="relationship-constraints-dependent-restrict">Relationship Constraints: <code>dependent: :restrict</code></h4>
+<p>The restrict case is a bit different than the others in that it will stop the removal from occuring if there is an existing child reference to the parent being removed.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:writers</span>, dependent: <span class="st">:restrict</span>
+  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span>, dependent: <span class="st">:restrict</span></code></pre>
+<p>We start in our standard state.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; rocky30.id
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000022&#39;</span>) 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000024&#39;</span>)] 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000022&#39;</span>) 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000022&#39;</span>)] 
+&gt; rocky30=<span class="dt">Movie</span>.find(rocky30.id)
+&gt; rocky30.destroy
+before_destroy <span class="dt">Movie</span> callback <span class="kw">for</span> 568029ede301d06376000022, 
+    sequel_to=, writers=[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000024&#39;</span>)]</code></pre>
+<p>However, in this case the removal goes nowhere because a child reference is found. In this case processing was stopped when the first child reference was found. The same error would result on the other relationship if Mongoid needed to go that far in checking relationships.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">D, {<span class="st">&quot;count&quot;</span>=&gt;<span class="st">&quot;writers&quot;</span>, <span class="st">&quot;query&quot;</span>=&gt;{<span class="st">&quot;$and&quot;</span>=&gt;[{
+   <span class="st">&quot;_id&quot;</span>=&gt;{<span class="st">&quot;$in&quot;</span>=&gt;[<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000024&#39;</span>)]}}]}}
+<span class="dt">Mongoid</span>::<span class="dt">Errors</span>::<span class="dt">DeleteRestriction</span>: 
+message:
+  <span class="dt">Cannot</span> delete <span class="dt">Movie</span> because of dependent <span class="st">&#39;writers&#39;</span>.
+summary:
+  <span class="dt">When</span> defining <span class="st">&#39;writers&#39;</span> with a <span class="st">:dependent</span> =&gt; <span class="st">:restrict</span>, <span class="dt">Mongoid</span> will
+  raise an error <span class="kw">when</span> attempting to delete the <span class="dt">Movie</span> <span class="kw">when</span> the child
+  <span class="st">&#39;writers&#39;</span> still has documents <span class="kw">in</span> it.
+resolution:
+  <span class="dt">Don</span><span class="st">&#39;t attempt to delete the parent Movie when it has children, or</span>
+<span class="st">  change the dependent option on the relation.</span></code></pre>
+<p>Notice how all objects and relationships stay in-place.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; <span class="dv">true</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).first.writer_ids <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky30.id).exists?
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000024&#39;</span>)] 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dv">true</span> 
+&gt; <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).first.sequel_of  <span class="kw">if</span> <span class="dt">Movie</span>.where(<span class="st">:id=</span>&gt;rocky31.id).exists?
+ =&gt; <span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000022&#39;</span>) 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; <span class="dv">true</span> 
+&gt; <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).first.movie_ids <span class="kw">if</span> <span class="dt">Writer</span>.where(<span class="st">:id=</span>&gt;writer.id).exists?
+ =&gt; [<span class="dt">BSON</span>::<span class="dt">ObjectId</span>(<span class="st">&#39;568029ede301d06376000022&#39;</span>)] </code></pre>
+<h3 id="queries">Queries</h3>
+<h3 id="geolocation-query">Geolocation Query</h3>
+<p>Geolocation queries are synatically straight forward in Mongoid and every model class has the built-in ability to express and execute a geolocation query. The is nothing specifically required except for a set of geolocation coordinates in one of the fields and an index.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Actor</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  embeds_one <span class="st">:place_of_birth</span>, class_name: <span class="st">&#39;Place&#39;</span> , as: <span class="st">:locatable</span>
+  ...
+  index ({ :<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt; <span class="dt">Mongo</span>::<span class="dt">Index</span>::<span class="dt">GEO2DSPHERE</span> })</code></pre>
+<p>We can grab a place from the <code>places</code> collection and directly express a query on the Actors class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; silver_spring=<span class="dt">Place</span>.where(<span class="st">:city=</span>&gt;<span class="st">&quot;Silver Spring&quot;</span>, <span class="st">:state=</span>&gt;<span class="st">&quot;MD&quot;</span>).first
+
+&gt; <span class="dt">Actor</span>.near(:<span class="st">&quot;place_of_birth.geolocation&quot;</span>=&gt;silver_spring.geolocation)
+       .limit(<span class="dv">5</span>).each {|actor| pp <span class="st">&quot;</span><span class="ot">#{</span>actor.name<span class="ot">}</span><span class="st">, pob=</span><span class="ot">#{</span>actor.place_of_birth.id<span class="ot">}</span><span class="st">&quot;</span>}
+
+<span class="dt">DEBUG</span> | {<span class="st">&quot;find&quot;</span>=&gt;<span class="st">&quot;actors&quot;</span>, <span class="st">&quot;filter&quot;</span>=&gt;{<span class="st">&quot;place_of_birth.geolocation&quot;</span>=&gt;{
+  <span class="st">&quot;$near&quot;</span>=&gt;{<span class="st">:type=</span>&gt;<span class="st">&quot;Point&quot;</span>, <span class="st">:coordinates=</span>&gt;[-<span class="fl">77.026088</span>, <span class="fl">38.99066570000001</span>]}}}, 
+  <span class="st">&quot;limit&quot;</span>=&gt;<span class="dv">5</span>}
+
+<span class="st">&quot;Lewis Black, pob=Silver Spring, MD, USA&quot;</span>
+<span class="st">&quot;Jeffrey Wright, pob=Washington, DC, USA&quot;</span>
+<span class="st">&quot;Samuel L. Jackson, pob=Washington, DC, USA&quot;</span>
+<span class="st">&quot;Laura Cayouette, pob=Laurel, MD, USA&quot;</span>
+<span class="st">&quot;Mark Rolston, pob=Baltimore, MD, USA</span></code></pre>
+<p>We can add a custom method to the Actor class to make this slightly easier to call.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.near_pob place, max_meters
+    near(:<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt; place.geolocation)
+    .max_distance(:<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt;max_meters)
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Actor</span>.near_pob(silver_spring, <span class="dv">10</span>*<span class="fl">1609.34</span>)
+       .each {|actor| pp <span class="st">&quot;</span><span class="ot">#{</span>actor.name<span class="ot">}</span><span class="st">, pob=</span><span class="ot">#{</span>actor.place_of_birth.id<span class="ot">}</span><span class="st">&quot;</span>}
+<span class="st">&quot;Lewis Black, pob=Silver Spring, MD, USA&quot;</span>
+<span class="st">&quot;Jeffrey Wright, pob=Washington, DC, USA&quot;</span>
+<span class="st">&quot;Samuel L. Jackson, pob=Washington, DC, USA&quot;</span></code></pre>
+<h3 id="scaffolding">Scaffolding</h3>
+<h2 id="assembly">Assembly</h2>
+<p>The following describes some details of how the movies application example was assembled.</p>
+<h3 id="create-application">Create Application</h3>
+<ol style="list-style-type: decimal">
+<li>Create a new Rails application.</li>
+</ol>
+<pre class="shell"><code>$ rails new movies
+$ cd movies</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Add the <code>mongoid</code> gem to the <code>Gemfile</code> and run <code>bundle</code>.</li>
+</ol>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">gem <span class="st">&#39;mongoid&#39;</span>, <span class="st">&#39;~&gt; 5.0.0&#39;</span></code></pre>
+<pre class="shell"><code>$ bundle</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Configure application with <code>Mongoid</code> by generating a <code>config/mongoid.yml</code> file and loading that from within <code>config/application.rb</code>.</li>
+</ol>
+<pre class="shell"><code>rails g mongoid:config
+  config/mongoid.yml</code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">module</span> <span class="dt">Movies</span>
+  <span class="kw">class</span> <span class="dt">Application</span> &lt; <span class="dt">Rails</span>::<span class="dt">Application</span>
+    ...
+    <span class="co">#bootstraps mongoid within applications -- like rails console</span>
+    <span class="dt">Mongoid</span>.load!(<span class="st">&#39;./config/mongoid.yml&#39;</span>)
+    ...
+    <span class="co">#mongoid gem configures mongoid as default model generator</span>
+    <span class="co">#this can make it explicit or switch back to active_record default</span>
+    config.generators {|g| g.orm <span class="st">:mongoid</span>}
+    <span class="co">#config.generators {|g| g.orm :active_record}</span></code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Start Rails server.</li>
+</ol>
+<pre class="shell"><code>$ rails s</code></pre>
+<h3 id="custom-classes-assembly">Custom Classes Assembly</h3>
+<p>Create custom classes that primarily represent anonymous blocks of information within the documents. Mongoid does not require that any information be mapped, but mapping it extends your ability to query the information and conveniently transform it if necessary (otherwise just leave it alone). In the case of this application there are two demonstration custom classes; <code>Measurement</code> and <code>Point</code>.</p>
+<ul>
+<li>Measurement</li>
+<li>Point</li>
+</ul>
+<p>Each of the classes typically had an <code>initialize()</code> method that took specific arguments and not general purpose for different sources. The <code>to_s</code> is useful to output a formatted string of what the object represents.</p>
+<ul>
+<li><code>initialize</code> - normalized form -- independent of source formats</li>
+<li><code>to_s</code> - useful in producing formatted output</li>
+</ul>
+<p>Mongoid requires one instance method called <code>mongoize</code> to to create a hash, array, etc. of data that is in database form.</p>
+<ul>
+<li><code>mongoize</code> - creates a DB-form of the instance</li>
+</ul>
+<p>Mongoid requires the class provide three (3) class methods to be able to take an external object form and return either the database or object instance form. There is typically a lot of case statements checking for type and other signatures to determine how to get it in the required format.</p>
+<ul>
+<li><code>self.demongoize(object)</code> - creates an instance of the class from the DB-form of the data</li>
+<li><code>self.mongoize(object)</code> - takes in all forms of the object and produces a DB-friendly form</li>
+<li><code>self.evolve(object)</code> - used by criteria to convert object to DB-friendly form</li>
+</ul>
+<h3 id="create-scaffold">Create Scaffold</h3>
+<p>The examples in this section assume that <code>mongoid</code> is the default model generator. To be explicit at command time, add the <code>--orm mongoid</code> option to the command line.</p>
+<h3 id="place-assembly">Place Assembly</h3>
+<p><code>Place</code> models a point and its descriptive address information.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model Place formatted_address geolocation:Point street_number \
+    street_name city postal_code county state country</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Place</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:formatted_address</span>, type: <span class="dt">String</span>
+  field <span class="st">:geolocation</span>, type: <span class="dt">Point</span>
+  field <span class="st">:street_number</span>, type: <span class="dt">String</span>
+  field <span class="st">:street_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:city</span>, type: <span class="dt">String</span>
+  field <span class="st">:postal_code</span>, type: <span class="dt">String</span>
+  field <span class="st">:county</span>, type: <span class="dt">String</span>
+  field <span class="st">:state</span>, type: <span class="dt">String</span>
+  field <span class="st">:country</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Override the default field mapping for <code>_id</code> to use the <code>formatted_address</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  field <span class="st">:_id</span>, type: <span class="dt">String</span>, default: -&gt; { formatted_address }</code></pre></li>
+<li><p>Some instances of this class will be embedded in other documents -- but not always documents of the exact same model class type. Therefore we still declare the <code>embedded_in</code> property but state that it is embedded inside any model class that declares an <code>embeds</code> propert defined as type <code>locatable</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  embedded_in <span class="st">:locatable</span>, polymorphic: <span class="dv">true</span> </code></pre></li>
+<li><p>There is one more thing we need to add to classes that take custom types. If you intend to modify this object using the UI or external classes that want to deal mostly with strings, you should beef up your <code>demongoize</code> method to take additional forms that can convert the representation to instance form.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> sanitize_for_mass_assignment(params)
+    params ||= {}
+    params.each_pair <span class="kw">do</span> |key, val|
+      <span class="kw">case</span> 
+      <span class="kw">when</span> [<span class="st">&quot;geolocation&quot;</span>].include?(key)
+        params[key]=<span class="dt">Point</span>.demongoize(val)
+      <span class="kw">else</span>
+      <span class="kw">end</span>
+    <span class="kw">end</span>
+  <span class="kw">end</span></code></pre></li>
+</ol>
+<h3 id="director-assembly">Director Assembly</h3>
+<p><code>Director</code> models the detailed information of a movie director.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model Director name</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Director</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Add the <code>Timestamp</code> mixin.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Director</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Timestamps</span></code></pre></li>
+<li><p>Add a many-to-one, <code>belongs_to</code> relation from <code>Director</code> to <code>Place</code>. Note that, in this case, the <code>Place</code> is not embedded. It is linked using a foreign key.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  belongs_to <span class="st">:residence</span>, class_name: <span class="st">&#39;Place&#39;</span></code></pre></li>
+<li><p>Add an instance method that will return a query clause set to return the movies the director is asociated with. We have to do this using a custom query since the actual movie reference to the director is through an embedded class (<code>DirectorRef</code>)</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> movies
+    <span class="dt">Movie</span>.where(:<span class="st">&quot;directors._id&quot;</span>=&gt;<span class="dv">self</span>.id)
+  <span class="kw">end</span></code></pre></li>
+<li><p>Add optional validation of the <code>name</code>. We went light on validation, but this is one of the few places used.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  validates_presence_of <span class="st">:name</span></code></pre></li>
+</ol>
+<h3 id="directorref-assembly">DirectorRef Assembly</h3>
+<p><code>DirectorRef</code> is an annotated reference to a director that gets embedded into the <code>Movie</code>. The class is populated with fields that describe the director and anything possibly related specifically to that movie. However, anything added to this class that is director-specific must be updated everywhere this director is used.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model DirectorRef name</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">DirectorRef</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Add the <code>embedded_in</code> relation to the <code>Movie</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  embedded_in <span class="st">:movie</span></code></pre></li>
+<li><p>Add the child many-to-one relation from <code>DirectorRef</code> to the actual <code>Director</code> class. This class was referred to as an <code>annotated link</code>. This foreign key holds the link and the other properties are either cached from what is on the other side of that link of specific to this movie.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  belongs_to <span class="st">:director</span>, foreign_key: <span class="st">:_id</span></code></pre></li>
+</ol>
+<h3 id="writer-assembly">Writer Assembly</h3>
+<p><code>Writer</code> holds the detailed information about the writer of a movie. This class is directly associated with the movie without an annotated link.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model Writer name</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Add the <code>Timestamps</code> mixin.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Writer</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Timestamps</span></code></pre></li>
+<li><p>Add an <code>embeds_one</code> relation to the <code>Place</code>. Remember that the <code>Director</code> used a foreign key reference to the <code>Place</code> and this collection uses an embdded copy.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  embeds_one <span class="st">:hometown</span>, as: <span class="st">:locatable</span>, class_name: <span class="st">&#39;Place&#39;</span></code></pre></li>
+<li><p>Add the many-to-many relationship with <code>Movie</code>. Since the relationship is directly between the <code>Movie</code> and <code>Writer</code>, we can delegate all of this to Mongoid.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:movies</span></code></pre></li>
+</ol>
+<h3 id="actor-assembly">Actor Assembly</h3>
+<p><code>Actor</code> contains the information details of an actor in a <code>Movie</code>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model Actor name birth_name date_of_birth:Date height:Measurement bio:text</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Actor</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:name</span>, type: <span class="dt">String</span>
+  field <span class="st">:birth_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:date_of_birth</span>, type: <span class="dt">Date</span>
+  field <span class="st">:height</span>, type: <span class="dt">Measurement</span>
+  field <span class="st">:bio</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Add a mapping of <code>birth_name</code> to the document value of <code>birthName</code>. The snake_case form of the name follows Rails naming standards, which will help us out when we get to the scaffold.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  field <span class="st">:birthName</span>, as: <span class="st">:birth_name</span>, type: <span class="dt">String</span></code></pre></li>
+<li><p>Add an <code>embeds_one</code> relationship with <code>Place</code>. Since multiple model types can embed a <code>Place</code>, we must declare the polymorphic label (<code>locatable</code>) defined in <code>Place</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  embeds_one <span class="st">:place_of_birth</span>, class_name: <span class="st">&#39;Place&#39;</span> , as: <span class="st">:locatable</span></code></pre></li>
+<li><p>Add an index on the geolocation coordinates within the actor's birth place.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  index ({ :<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt; <span class="dt">Mongo</span>::<span class="dt">Index</span>::<span class="dt">GEO2DSPHERE</span> })</code></pre></li>
+<li><p>Add a few custom queries that mimic what Mongoid would have implemented if it were allowed to declare a <code>has_many</code> to an embedded class or to the parent of an embedded class. Instead, we are forced to write a small amount of application code to make that happen.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="co">#sort-of has_many :movies, class_name:&quot;Movie&quot;</span>
+  <span class="kw">def</span> movies
+    <span class="dt">Movie</span>.where(:<span class="st">&quot;roles._id&quot;</span>=&gt;<span class="dv">self</span>.id)
+  <span class="kw">end</span>
+  <span class="co">#sort-of has_many roles:, class_name: &#39;MovieRole`</span>
+  <span class="kw">def</span> roles
+    <span class="dt">Movie</span>.where(:<span class="st">&quot;roles._id&quot;</span>=&gt;<span class="dv">self</span>.id).map {|m| m.roles.where(<span class="st">:_id=</span>&gt;<span class="dv">self</span>.id).first}
+  <span class="kw">end</span>  </code></pre></li>
+<li><p>Add a geolocation search helper method for <code>place_of_birth</code>. This primarily keeps the client from having to know the index name.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> <span class="dv">self</span>.near_pob place, max_meters
+    near(:<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt; place.geolocation)
+    .max_distance(:<span class="st">&quot;place_of_birth.geolocation&quot;</span> =&gt;max_meters)
+  <span class="kw">end</span></code></pre></li>
+<li><p>Add conversion support for custom types added during mass assignment. This method will have to be beefed up with the various string or other object formats you throw at the custom type.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> sanitize_for_mass_assignment(params)
+    params ||= {}
+    params.each_pair <span class="kw">do</span> |key, val|
+      <span class="kw">case</span> 
+      <span class="kw">when</span> [<span class="st">&quot;height&quot;</span>].include?(key)
+        params[key]=<span class="dt">Measurement</span>.demongoize(val)
+      <span class="kw">else</span>
+      <span class="kw">end</span>
+    <span class="kw">end</span>
+  <span class="kw">end</span></code></pre></li>
+</ol>
+<h3 id="movierole-assembly">MovieRole Assembly</h3>
+<p><code>MovieRole</code> holds the role-specific information and relation between the <code>Movie</code> and <code>Actor</code>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model MovieRole character actor_name main:boolean 
+    url_character url_photo url_profile</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">MovieRole</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:character</span>, type: <span class="dt">String</span>
+  field <span class="st">:actor_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:main</span>, type: <span class="dt">Mongoid</span>::<span class="dt">Boolean</span>
+  field <span class="st">:url_character</span>, type: <span class="dt">String</span>
+  field <span class="st">:url_photo</span>, type: <span class="dt">String</span>
+  field <span class="st">:url_profile</span>, type: <span class="dt">String</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Add document mappings for a few of the camelCase properties in the document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  field <span class="st">:actorName</span>, as: <span class="st">:actor_name</span>, type: <span class="dt">String</span>
+  field <span class="st">:urlCharacter</span>, as: <span class="st">:url_character</span>, type: <span class="dt">String</span>
+  field <span class="st">:urlPhoto</span>, as: <span class="st">:url_photo</span>, type: <span class="dt">String</span>
+  field <span class="st">:urlProfile</span>, as: <span class="st">:url_profile</span>, type: <span class="dt">String</span></code></pre></li>
+<li><p>Add the <code>embedded</code> relationship to <code>Movie</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  embedded_in <span class="st">:movie</span></code></pre></li>
+<li><p>Add the foreign key, many-to-one relationship to <code>Actor</code>.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  belongs_to <span class="st">:actor</span>, foreign_key: <span class="st">:_id</span>, touch: <span class="dv">true</span> </code></pre></li>
+</ol>
+<h3 id="movie-assembly">Movie Assembly</h3>
+<p><code>Movie</code> holds the core information about the movie, its properties, and supporting members.</p>
+<ol style="list-style-type: decimal">
+<li><p>Generate the core of the model class using the <code>rails generate</code> command.</p>
+<pre class="shell"><code>$ rails g model Movie title type rated year:integer release_date:date \
+    runtime:Measurement votes:integer countries:array languages:array \
+    genres:array filming_locations:array metascore simple_plot:text \
+    plot:text url_imdb url_poster directors:array actors:array</code></pre>
+<p>This generates the following model class.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Movie</span>
+  include <span class="dt">Mongoid</span>::<span class="dt">Document</span>
+  field <span class="st">:title</span>, type: <span class="dt">String</span>
+  field <span class="st">:type</span>, type: <span class="dt">String</span>
+  field <span class="st">:rated</span>, type: <span class="dt">String</span>
+  field <span class="st">:year</span>, type: <span class="dt">Integer</span>
+  field <span class="st">:release_date</span>, type: <span class="dt">Date</span>
+  field <span class="st">:runtime</span>, type: <span class="dt">Measurement</span>
+  field <span class="st">:votes</span>, type: <span class="dt">Integer</span>
+  field <span class="st">:countries</span>, type: <span class="dt">Array</span>
+  field <span class="st">:languages</span>, type: <span class="dt">Array</span>
+  field <span class="st">:genres</span>, type: <span class="dt">Array</span>
+  field <span class="st">:filming_locations</span>, type: <span class="dt">Array</span>
+  field <span class="st">:metascore</span>, type: <span class="dt">String</span>
+  field <span class="st">:simple_plot</span>, type: <span class="dt">String</span>
+  field <span class="st">:plot</span>, type: <span class="dt">String</span>
+  field <span class="st">:url_imdb</span>, type: <span class="dt">String</span>
+  field <span class="st">:url_poster</span>, type: <span class="dt">String</span>
+  field <span class="st">:directors</span>, type: <span class="dt">Array</span>
+  field <span class="st">:actors</span>, type: <span class="dt">Array</span>
+<span class="kw">end</span></code></pre></li>
+<li><p>Add the <code>Timestamps</code> mixin.</p>
+<pre><code>class Movie
+  include Mongoid::Document
+  include Mongoid::Timestamps</code></pre></li>
+<li><p>Add document mappings for a few of the camelCase properties in the document.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  field <span class="st">:filmingLocations</span>, as: <span class="st">:filming_locations</span>, type: <span class="dt">Array</span>
+  field <span class="st">:simplePlot</span>, as: <span class="st">:simple_plot</span>,  type: <span class="dt">String</span>
+  field <span class="st">:urlIMDB</span>, as: <span class="st">:url_imdb</span>,  type: <span class="dt">String</span>
+  field <span class="st">:urlPoster</span>, as: <span class="st">:url_poster</span>, type: <span class="dt">String</span></code></pre></li>
+<li><p>Add the two <code>embedded</code> relationships to <code>MovieRole</code> and <code>DirectorRef</code>. These are two annotated links to <code>Actor</code> and <code>Director</code> and contain cached information on the <code>Movie</code> side about the document they link to. <code>MovieRole</code> also contains some movie-specific information relative to the movie role.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  embeds_many <span class="st">:roles</span>, class_name:<span class="st">&quot;MovieRole&quot;</span>
+  embeds_many <span class="st">:directors</span>, class_name:<span class="st">&quot;DirectorRef&quot;</span></code></pre></li>
+<li><p>Add the many-to-many relationship with <code>Writer</code>. This relationship was thinned down to just the foreign key on both sides of the relationship so the entire relation can be managed by Mongoid.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_and_belongs_to_many <span class="st">:writers</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  has_one <span class="st">:sequel</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span>
+  belongs_to <span class="st">:sequel_to</span>, foreign_key: <span class="st">:sequel_of</span>, class_name:<span class="st">&quot;Movie&quot;</span></code></pre></li>
+<li><p>Add a method to address receiving updates for type-specific fields in simple string format from the web clients. This method and supporting converters need to be beefed up as new situations are encountered with non-native type strings. Notice, however, anything that has a built-in conversion to/from a string (e.g., Date and Integer) do not have to be converted.</p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">  <span class="kw">def</span> sanitize_for_mass_assignment(params)
+    params ||= {}
+    params.each_pair <span class="kw">do</span> |key, val|
+      <span class="kw">case</span> 
+      <span class="kw">when</span> [<span class="st">&quot;runtime&quot;</span>].include?(key)
+        params[key]=<span class="dt">Measurement</span>.demongoize(val)
+      <span class="kw">when</span> [<span class="st">&quot;countries&quot;</span>,
+            <span class="st">&quot;languages&quot;</span>,
+            <span class="st">&quot;genres&quot;</span>,
+            <span class="st">&quot;filming_locations&quot;</span>].include?(key) &amp;&amp; val.is_a?(<span class="dt">String</span>)
+        params[key]=val.split(<span class="st">&quot;,&quot;</span>).map {|v| v.strip }
+      <span class="kw">else</span>
+      <span class="kw">end</span>
+    <span class="kw">end</span>
+  <span class="kw">end</span></code></pre></li>
+</ol>
+<h3 id="import-data">Import Data</h3>
+<pre class="shell"><code>$ rake db:seed</code></pre>
+<h3 id="test-drive">Test Drive</h3>
+<ol style="list-style-type: decimal">
+<li>Locate actors with a place of birth near Silver Spring, MD.</li>
+</ol>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; <span class="dt">Actor</span>.near_pob(silver_spring, <span class="dv">10</span>*<span class="fl">1609.34</span>)
+       .each {|actor| pp <span class="st">&quot;</span><span class="ot">#{</span>actor.name<span class="ot">}</span><span class="st">, pob=</span><span class="ot">#{</span>actor.place_of_birth.id<span class="ot">}</span><span class="st">&quot;</span>}; <span class="dv">nil</span>
+<span class="st">&quot;Lewis Black, pob=Silver Spring, MD, USA&quot;</span>                                                                                                                                                     
+<span class="st">&quot;Jeffrey Wright, pob=Washington, DC, USA&quot;</span>                                                                                                                                                     
+<span class="st">&quot;Roy Dotrice, pob=Washington, DC, USA&quot;</span>                                                                                                                                                        
+<span class="st">&quot;Samuel L. Jackson, pob=Washington, DC, USA&quot;</span>   </code></pre>
+<pre><code> &gt; damon.movies.map {|movie| movie.title}
+  =&gt; [&quot;The Bourne Ultimatum&quot;, &quot;Good Will Hunting&quot;, 
+      &quot;The Martian&quot;, &quot;Saving Private Ryan&quot;] </code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; damon=<span class="dt">Actor</span>.where(<span class="st">:name=</span>&gt;{<span class="st">:$regex=</span>&gt;<span class="st">&quot;Matt Damon&quot;</span>}).first
+&gt; damon.roles.map {|role| <span class="st">&quot;</span><span class="ot">#{</span>role.character<span class="ot">}</span><span class="st"> =&gt; </span><span class="ot">#{</span>role.movie.title<span class="ot">}</span><span class="st">&quot;</span>}
+ =&gt; [<span class="st">&quot;Jason Bourne =&gt; The Bourne Ultimatum&quot;</span>, 
+     <span class="st">&quot;Will Hunting =&gt; Good Will Hunting&quot;</span>, 
+     <span class="st">&quot;Mark Watney =&gt; The Martian&quot;</span>, 
+     <span class="st">&quot;Private Ryan =&gt; Saving Private Ryan&quot;</span>] </code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"> &gt; pvt_ryan=damon.movies.where(<span class="st">:title=</span>&gt;<span class="st">&quot;Saving Private Ryan&quot;</span>).first
+ &gt; pvt_ryan.roles.each {|role| puts <span class="st">&quot;</span><span class="ot">#{</span>role.actor_name<span class="ot">}</span><span class="st"> =&gt; </span><span class="ot">#{</span>role.actor.birth_name<span class="ot">}</span><span class="st">&quot;</span>}; <span class="dv">nil</span>
+ <span class="dt">Tom</span> <span class="dt">Hanks</span> =&gt; <span class="dt">Thomas</span> <span class="dt">Jeffrey</span> <span class="dt">Hanks</span>
+ <span class="dt">Tom</span> <span class="dt">Sizemore</span> =&gt; <span class="dt">Thomas</span> <span class="dt">Edward</span> <span class="dt">Sizemore</span> <span class="dt">Jr</span>.
+ <span class="dt">Edward</span> <span class="dt">Burns</span> =&gt; <span class="dt">Edward</span> <span class="dt">Fitzgerald</span> <span class="dt">Burns</span>
+ <span class="dt">Barry</span> <span class="dt">Pepper</span> =&gt; <span class="dt">Barry</span> <span class="dt">Robert</span> <span class="dt">Pepper</span>
+ <span class="dt">Adam</span> <span class="dt">Goldberg</span> =&gt; <span class="dt">Adam</span> <span class="dt">Charles</span> <span class="dt">Goldberg</span>
+ <span class="dt">Vin</span> <span class="dt">Diesel</span> =&gt; <span class="dt">Mark</span> <span class="dt">Sinclair</span>
+ <span class="dt">Giovanni</span> <span class="dt">Ribisi</span> =&gt; <span class="dt">Antonino</span> <span class="dt">Giovanni</span> <span class="dt">Ribisi</span>
+ <span class="dt">Jeremy</span> <span class="dt">Davies</span> =&gt; <span class="dt">Jeremy</span> <span class="dt">Davies</span> <span class="dt">Boring</span>
+ <span class="dt">Matt</span> <span class="dt">Damon</span> =&gt; <span class="dt">Matthew</span> <span class="dt">Paige</span> <span class="dt">Damon</span>
+ <span class="dt">Ted</span> <span class="dt">Danson</span> =&gt; <span class="dt">Edward</span> <span class="dt">Bridge</span> <span class="dt">Danson</span> <span class="dt">III</span>
+ <span class="dt">Paul</span> <span class="dt">Giamatti</span> =&gt; <span class="dt">Paul</span> <span class="dt">Edward</span> <span class="dt">Valentine</span> <span class="dt">Giamatti</span>
+ <span class="dt">Dennis</span> <span class="dt">Farina</span> =&gt; 
+ <span class="dt">Joerg</span> <span class="dt">Stadler</span> =&gt; 
+ <span class="dt">Max</span> <span class="dt">Martini</span> =&gt; <span class="dt">Maximilian</span> <span class="dt">Carlo</span> <span class="dt">Martini</span>
+ <span class="dt">Dylan</span> <span class="dt">Bruno</span> =&gt; <span class="dt">Dylan</span> A. <span class="dt">Bruno</span></code></pre>
+<pre class="sourceCode ruby"><code class="sourceCode ruby">&gt; pvt_ryan.directors.map {|d| d.name}
+ =&gt; [<span class="st">&quot;Steven Spielberg&quot;</span>] 
+&gt; pvt_ryan.directors.map {|d| d.director.name}
+ =&gt; [<span class="st">&quot;Steven Spielberg&quot;</span>] 
+&gt; pvt_ryan.directors.map {|d| d.director.movies.map {|m| m.title}}
+ =&gt; [[<span class="st">&quot;Jurassic Park&quot;</span>, <span class="st">&quot;Jaws&quot;</span>, <span class="st">&quot;Saving Private Ryan&quot;</span>]]
+&gt; pvt_ryan.writers.map {|w| w.name }
+ =&gt; [<span class="st">&quot;Robert Rodat&quot;</span>]
+&gt; pvt_ryan.writers.map {|w| w.movies.map {|m| m.title}}
+ =&gt; [[<span class="st">&quot;Saving Private Ryan&quot;</span>]] </code></pre>
+<h3 id="controllerview-assembly">Controller/View Assembly</h3>
+<h3 id="movies-contollerview-assembly">Movies Contoller/View Assembly</h3>
+<ol style="list-style-type: decimal">
+<li><p>Generate the scaffold for the controller and view.</p>
+<pre class="shell"><code>$ rails g scaffold_controller Movie title type rated year:integer \
+    release_date:date runtime:integer votes:integer countries:array \
+    languages:array genres:array filming_locations:array metascore \
+    simple_plot:text plot:text url_imdb url_poster directors:array actors:array</code></pre></li>
+<li><p>Add the <code>movies</code> resource to <code>config/routes.rb</code></p>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="dt">Rails</span>.application.routes.draw <span class="kw">do</span>
+   resources <span class="st">:movies</span></code></pre></li>
+<li><p>Basic page is displayable.</p>
+<pre class="url"><code>http://localhost:3000/movies</code></pre></li>
+<li><p>Bring the <code>url_poster</code>, <code>title</code>, and <code>url_imdb</code> elements to the beginning of the table along with their titles.</p>
+<pre class="sourceCode html"><code class="sourceCode html">      <span class="kw">&lt;th&gt;</span>Poster<span class="kw">&lt;/th&gt;</span>
+      <span class="kw">&lt;th&gt;</span>Title<span class="kw">&lt;/th&gt;</span>
+      <span class="kw">&lt;th&gt;</span>Url imdb<span class="kw">&lt;/th&gt;</span>
+      ...
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= movie.url_poster %&gt;<span class="kw">&lt;/td&gt;</span>
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= movie.title %&gt;<span class="kw">&lt;/td&gt;</span>
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= movie.url_imdb %&gt;<span class="kw">&lt;/td&gt;</span></code></pre></li>
+<li><p>Change the <code>url_poster</code> to an <code>img</code> tag and use the value of <code>url_poster</code> as the URL to the image.</p>
+<pre class="sourceCode html"><code class="sourceCode html">      <span class="kw">&lt;td&gt;&lt;img</span><span class="ot"> height=</span><span class="st">&quot;100px&quot;</span><span class="ot"> width=</span><span class="st">&quot;80px&quot;</span><span class="ot"> src=</span> <span class="er">&lt;</span><span class="st">%=</span><span class="ot"> movie.url_poster</span> <span class="er">%</span><span class="kw">&gt;</span>/&gt;<span class="kw">&lt;/td&gt;</span></code></pre></li>
+<li><p>Combine the <code>title</code> and <code>url_imdb</code> such that the <code>title</code> is the link text and the <code>url_imdb</code> is the URL of the link. Remove the header for the <code>url_imdb</code>.</p>
+<pre class="sourceCode html"><code class="sourceCode html">      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= link_to movie.title, movie.url_imdb %&gt;<span class="kw">&lt;/td&gt;</span></code></pre></li>
+<li><p>Remove <code>plot</code>, <code>directors</code>, and <code>actors</code> form the index page. Feel free to remove or adjust anything else.</p>
+<pre class="sourceCode html"><code class="sourceCode html">      <span class="kw">&lt;th&gt;</span>Plot<span class="kw">&lt;/th&gt;</span>
+      <span class="kw">&lt;th&gt;</span>Directors<span class="kw">&lt;/th&gt;</span>
+      <span class="kw">&lt;th&gt;</span>Actors<span class="kw">&lt;/th&gt;</span>
+      ...
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= movie.plot %&gt;<span class="kw">&lt;/td&gt;</span>
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= movie.directors %&gt;<span class="kw">&lt;/td&gt;</span>
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= movie.actors %&gt;<span class="kw">&lt;/td&gt;</span></code></pre></li>
+<li><p>Add general purpose partial view to dump contents of objects to a table. We will make use of this as we add relationships. You may have to create the <code>application</code> directory below <code>view</code>.</p>
+<p><code>app/views/application/_member.html.erb</code></p>
+<pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;field&quot;</span><span class="kw">&gt;</span>
+<span class="kw">&lt;table</span><span class="ot"> border=</span><span class="st">&#39;1&#39;</span><span class="kw">&gt;</span>
+  <span class="er">&lt;</span>% member.attributes.sort.each do |r| %&gt;
+    <span class="kw">&lt;tr&gt;</span>
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= r[0] %&gt;<span class="kw">&lt;/td&gt;</span>
+      <span class="kw">&lt;td&gt;</span><span class="er">&lt;</span>%= r[1] %&gt;<span class="kw">&lt;/td&gt;</span>
+    <span class="kw">&lt;/tr&gt;</span>
+  <span class="er">&lt;</span>% end %&gt;
+<span class="kw">&lt;/table&gt;</span>
+<span class="kw">&lt;/div&gt;</span></code></pre></li>
+<li><p>Update the <code>show</code> page to use the partial just created. This should build a very simple, but functional view of the related information.</p>
+<pre class="sourceCode html"><code class="sourceCode html"><span class="kw">&lt;p&gt;</span>
+  <span class="kw">&lt;strong&gt;</span>Directors:<span class="kw">&lt;/strong&gt;</span>
+  <span class="er">&lt;</span>%= render partial: &quot;member&quot;, collection: @movie.directors %&gt;
+<span class="kw">&lt;/p&gt;</span>
+
+<span class="kw">&lt;p&gt;</span>
+  <span class="kw">&lt;strong&gt;</span>Writers:<span class="kw">&lt;/strong&gt;</span>
+  <span class="er">&lt;</span>%= render partial: &quot;member&quot;, collection: @movie.writers %&gt;
+<span class="kw">&lt;/p&gt;</span>
+
+<span class="kw">&lt;p&gt;</span>
+  <span class="kw">&lt;strong&gt;</span>Actors:<span class="kw">&lt;/strong&gt;</span>
+  <span class="er">&lt;</span>%= render partial: &quot;member&quot;, collection: @movie.roles %&gt;
+<span class="kw">&lt;/p&gt;</span></code></pre></li>
+<li><p>It is endless what you can do from here.</p></li>
+</ol>

@@ -1,0 +1,5361 @@
+[{
+	"_id": "05018 Orvieto TR, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			12.1107446,
+			42.7185068
+		]
+	},
+	"city": "Orvieto",
+	"postal_code": "05018",
+	"county": "TR",
+	"state": "Umbria",
+	"country": "IT"
+},
+{
+	"_id": "3621 Breukelen, Netherlands",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			5.001329,
+			52.1710222
+		]
+	},
+	"city": "Breukelen",
+	"postal_code": "3621",
+	"county": "Breukelen",
+	"state": "UT",
+	"country": "NL"
+},
+{
+	"_id": "92100 Agrigento AG, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			13.5765475,
+			37.3110897
+		]
+	},
+	"city": "Agrigento",
+	"postal_code": "92100",
+	"county": "AG",
+	"state": "Sicilia",
+	"country": "IT"
+},
+{
+	"_id": "9900 Elling, Denmark",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			10.4778643,
+			57.47680179999999
+		]
+	},
+	"city": "Elling",
+	"postal_code": "9900",
+	"county": "Frederikshavn Municipality",
+	"state": "North Denmark Region",
+	"country": "DK"
+},
+{
+	"_id": "Aberdeen, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.1823124,
+			57.2177758
+		]
+	},
+	"country": "GB"
+},
+{
+	"_id": "Adelaide SA, Australia",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			138.5999594,
+			-34.92862119999999
+		]
+	},
+	"city": "Adelaide",
+	"state": "SA",
+	"country": "AU"
+},
+{
+	"_id": "Alameda County, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-121.7195459,
+			37.6016892
+		]
+	},
+	"county": "Alameda County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Albany, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7562317,
+			42.6525793
+		]
+	},
+	"city": "Albany",
+	"county": "Albany County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Albuquerque, NM, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-106.6055534,
+			35.0853336
+		]
+	},
+	"city": "Albuquerque",
+	"county": "Bernalillo County",
+	"state": "NM",
+	"country": "US"
+},
+{
+	"_id": "Alexandria, Alexandria Governorate, Egypt",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			29.9187387,
+			31.2000924
+		]
+	},
+	"city": "Alexandria",
+	"state": "Alexandria Governorate",
+	"country": "EG"
+},
+{
+	"_id": "Allegheny County, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.0087746,
+			40.4450813
+		]
+	},
+	"county": "Allegheny County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Altoona, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-78.3947359,
+			40.5186809
+		]
+	},
+	"city": "Altoona",
+	"county": "Blair County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Ammanford, Carmarthenshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-3.988459,
+			51.792888
+		]
+	},
+	"city": "Ammanford",
+	"county": "Carmarthenshire",
+	"state": "Wales",
+	"country": "GB"
+},
+{
+	"_id": "Amsterdam, Netherlands",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			4.895167900000001,
+			52.3702157
+		]
+	},
+	"city": "Amsterdam",
+	"county": "Government of Amsterdam",
+	"state": "NH",
+	"country": "NL"
+},
+{
+	"_id": "Antony, France",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			2.302553,
+			48.759255
+		]
+	},
+	"city": "Antony",
+	"county": "Hauts-de-Seine",
+	"state": "IDF",
+	"country": "FR"
+},
+{
+	"_id": "Arkabutla, MS 38618, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.1223152,
+			34.6989904
+		]
+	},
+	"city": "Arkabutla",
+	"postal_code": "38618",
+	"county": "Tate County",
+	"state": "MS",
+	"country": "US"
+},
+{
+	"_id": "Armagh, Armagh, Armagh, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-6.652792,
+			54.3502798
+		]
+	},
+	"city": "Armagh",
+	"county": "Armagh",
+	"state": "Northern Ireland",
+	"country": "GB"
+},
+{
+	"_id": "Astoria, Queens, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.92346189999999,
+			40.7643574
+		]
+	},
+	"city": "NY",
+	"county": "Queens County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Auburn, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-121.0768901,
+			38.8965654
+		]
+	},
+	"city": "Auburn",
+	"county": "Placer County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Augusta, GA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-82.0105148,
+			33.4734978
+		]
+	},
+	"city": "Augusta",
+	"county": "Richmond County",
+	"state": "GA",
+	"country": "US"
+},
+{
+	"_id": "Australia",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			133.775136,
+			-25.274398
+		]
+	},
+	"country": "AU"
+},
+{
+	"_id": "Ayr, South Ayrshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-4.629179000000001,
+			55.458564
+		]
+	},
+	"city": "Ayr",
+	"county": "South Ayrshire",
+	"state": "Scotland",
+	"country": "GB"
+},
+{
+	"_id": "Babylon, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.3256753,
+			40.6956552
+		]
+	},
+	"city": "Babylon",
+	"county": "Suffolk County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Baltimore, MD, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-76.6121893,
+			39.2903848
+		]
+	},
+	"city": "Balt",
+	"state": "MD",
+	"country": "US"
+},
+{
+	"_id": "Bari, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			16.8718715,
+			41.1171432
+		]
+	},
+	"city": "Bari",
+	"county": "BA",
+	"state": "Apulia",
+	"country": "IT"
+},
+{
+	"_id": "Bascom, FL 32423, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-85.1185405,
+			30.927965
+		]
+	},
+	"city": "Bascom",
+	"postal_code": "32423",
+	"county": "Jackson County",
+	"state": "FL",
+	"country": "US"
+},
+{
+	"_id": "Baton Rouge, LA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-91.1403196,
+			30.4582829
+		]
+	},
+	"city": "Baton Rouge",
+	"county": "East Baton Rouge Parish",
+	"state": "LA",
+	"country": "US"
+},
+{
+	"_id": "Bay Ridge, Brooklyn, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.03294989999999,
+			40.6261638
+		]
+	},
+	"city": "NY",
+	"county": "Kings County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Bayreuth, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			11.5713346,
+			49.9456399
+		]
+	},
+	"city": "BT",
+	"county": "Upper Franconia",
+	"state": "BY",
+	"country": "DE"
+},
+{
+	"_id": "Beaufort, SC, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.6698286,
+			32.4315813
+		]
+	},
+	"city": "Beaufort",
+	"county": "Beaufort County",
+	"state": "SC",
+	"country": "US"
+},
+{
+	"_id": "Beech Grove, IN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.0899847,
+			39.7219884
+		]
+	},
+	"city": "Beech Grove",
+	"county": "Marion County",
+	"state": "IN",
+	"country": "US"
+},
+{
+	"_id": "Beirut, Lebanon",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			35.4954794,
+			33.8886289
+		]
+	},
+	"city": "Beirut",
+	"county": "Beirut",
+	"state": "Beirut",
+	"country": "LB"
+},
+{
+	"_id": "Belfast, Belfast, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-5.93012,
+			54.59728500000001
+		]
+	},
+	"city": "Belfast",
+	"county": "Belfast",
+	"state": "Northern Ireland",
+	"country": "GB"
+},
+{
+	"_id": "Bellaire, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.7423054,
+			40.0161843
+		]
+	},
+	"city": "Bellaire",
+	"county": "Belmont County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Benoni, South Africa",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			28.3695699,
+			-26.1510854
+		]
+	},
+	"city": "Benoni",
+	"county": "East Rand",
+	"state": "GP",
+	"country": "ZA"
+},
+{
+	"_id": "Berkeley, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.272747,
+			37.8715926
+		]
+	},
+	"city": "Berkeley",
+	"county": "Alameda County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Berlin, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			13.404954,
+			52.52000659999999
+		]
+	},
+	"city": "Berlin",
+	"state": "Berlin",
+	"country": "DE"
+},
+{
+	"_id": "Bethlehem, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-75.37045789999999,
+			40.6259316
+		]
+	},
+	"city": "Bethlehem",
+	"county": "Northampton County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Beverly Hills, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.4003563,
+			34.0736204
+		]
+	},
+	"city": "Beverly Hills",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Bielefeld, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			8.532470800000002,
+			52.0302285
+		]
+	},
+	"city": "BI",
+	"county": "Detmold",
+	"state": "NRW",
+	"country": "DE"
+},
+{
+	"_id": "Birmingham, AL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.80248999999999,
+			33.5206608
+		]
+	},
+	"city": "Birmingham",
+	"county": "Jefferson County",
+	"state": "AL",
+	"country": "US"
+},
+{
+	"_id": "Birmingham, West Midlands, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.890401,
+			52.48624299999999
+		]
+	},
+	"city": "Birmingham",
+	"county": "West Mids",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Boise City, OK 73933, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-102.5132419,
+			36.7294675
+		]
+	},
+	"city": "Boise City",
+	"postal_code": "73933",
+	"county": "Cimarron County",
+	"state": "OK",
+	"country": "US"
+},
+{
+	"_id": "Bolton, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.46006,
+			53.60329549999999
+		]
+	},
+	"country": "GB"
+},
+{
+	"_id": "Boston, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.0588801,
+			42.3600825
+		]
+	},
+	"city": "Boston",
+	"county": "Suffolk County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Bremerhaven, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			8.5809424,
+			53.5395845
+		]
+	},
+	"city": "Bremerhaven",
+	"state": "HB",
+	"country": "DE"
+},
+{
+	"_id": "Bridgeport, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.19517669999999,
+			41.1865478
+		]
+	},
+	"city": "Bridgeport",
+	"county": "Fairfield County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "Brighton, AL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.9472148,
+			33.4342755
+		]
+	},
+	"city": "Brighton",
+	"county": "Jefferson County",
+	"state": "AL",
+	"country": "US"
+},
+{
+	"_id": "Brindisi BR, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			17.9417616,
+			40.6327278
+		]
+	},
+	"city": "Brindisi",
+	"county": "BR",
+	"state": "Puglia",
+	"country": "IT"
+},
+{
+	"_id": "Bristol, City of Bristol, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.58791,
+			51.454513
+		]
+	},
+	"city": "Bristol",
+	"county": "City of Bristol",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Bronx County, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.86542949999999,
+			40.8370495
+		]
+	},
+	"county": "Bronx County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Bronx, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.8648268,
+			40.8447819
+		]
+	},
+	"city": "NY",
+	"county": "Bronx County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Brooklyn, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9441579,
+			40.6781784
+		]
+	},
+	"city": "NY",
+	"county": "Kings County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Bucharest, Romania",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			26.1025384,
+			44.4267674
+		]
+	},
+	"city": "Bucharest",
+	"county": "Bucharest",
+	"state": "Bucharest",
+	"country": "RO"
+},
+{
+	"_id": "Budapest, Hungary",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			19.040235,
+			47.497912
+		]
+	},
+	"city": "Bp",
+	"county": "Budapest",
+	"state": "Budapest",
+	"country": "HU"
+},
+{
+	"_id": "Buffalo, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-78.8783689,
+			42.88644679999999
+		]
+	},
+	"city": "Buffalo",
+	"county": "Erie County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Burlington, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.1956205,
+			42.5047161
+		]
+	},
+	"city": "Burlington",
+	"county": "Middlesex County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Burlington, VT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.21207199999999,
+			44.4758825
+		]
+	},
+	"city": "Burlington",
+	"county": "Chittenden County",
+	"state": "VT",
+	"country": "US"
+},
+{
+	"_id": "Cairo, Cairo Governorate, Egypt",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			31.2357116,
+			30.0444196
+		]
+	},
+	"city": "Cairo",
+	"state": "Cairo Governorate",
+	"country": "EG"
+},
+{
+	"_id": "Calgary, AB, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-114.0708459,
+			51.0486151
+		]
+	},
+	"city": "Calgary",
+	"county": "Division No. 6",
+	"state": "AB",
+	"country": "CA"
+},
+{
+	"_id": "Calumet Twp, MI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-88.4262689,
+			47.2718408
+		]
+	},
+	"city": "Calumet Twp",
+	"county": "Houghton County",
+	"state": "MI",
+	"country": "US"
+},
+{
+	"_id": "Camberwell, London, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.09301369999999999,
+			51.4740846
+		]
+	},
+	"city": "London",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Cambridge, Cambridge, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			0.121817,
+			52.205337
+		]
+	},
+	"city": "Cambridge",
+	"county": "Cambs",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Cambridge, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.10973349999999,
+			42.3736158
+		]
+	},
+	"city": "Cambridge",
+	"county": "Middlesex County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Campbell River, BC, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-125.2733354,
+			50.03312260000001
+		]
+	},
+	"city": "Campbell River",
+	"county": "Strathcona",
+	"state": "BC",
+	"country": "CA"
+},
+{
+	"_id": "Canton, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-81.378447,
+			40.79894729999999
+		]
+	},
+	"city": "Canton",
+	"county": "Stark County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Carbondale, IL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-89.2167501,
+			37.7272727
+		]
+	},
+	"city": "Carbondale",
+	"county": "Jackson County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "Cesena FC, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			12.2464292,
+			44.1396438
+		]
+	},
+	"city": "Cesena",
+	"county": "FC",
+	"state": "Emilia-Romagna",
+	"country": "IT"
+},
+{
+	"_id": "Chicago, IL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.6297982,
+			41.8781136
+		]
+	},
+	"city": "Chgo",
+	"county": "Cook County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "Chihuahua, Chihuahua, Mexico",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-106.0691004,
+			28.6329957
+		]
+	},
+	"city": "Chihuahua",
+	"county": "Chihuahua",
+	"state": "Chih.",
+	"country": "MX"
+},
+{
+	"_id": "Cincinnati, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-84.5120196,
+			39.1031182
+		]
+	},
+	"city": "Cin",
+	"county": "Hamilton County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Clapton, London E5, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.057,
+			51.56165
+		]
+	},
+	"city": "London",
+	"postal_code": "E5",
+	"county": "Gt Lon",
+	"country": "GB"
+},
+{
+	"_id": "Clayton, IL 62324, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.96068969999999,
+			40.0314366
+		]
+	},
+	"city": "Clayton",
+	"postal_code": "62324",
+	"county": "Adams County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "Cleveland, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-81.6943605,
+			41.49932
+		]
+	},
+	"city": "Cleve",
+	"county": "Cuyahoga County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Clinton, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.68290809999999,
+			42.41676349999999
+		]
+	},
+	"city": "Clinton",
+	"county": "Worcester County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Clydebank, West Dunbartonshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-4.404774,
+			55.900099
+		]
+	},
+	"city": "Clydebank",
+	"county": "West Dunbartonshire",
+	"state": "Scotland",
+	"country": "GB"
+},
+{
+	"_id": "Cologne, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			6.9602786,
+			50.937531
+		]
+	},
+	"city": "Cologne",
+	"county": "K",
+	"state": "NRW",
+	"country": "DE"
+},
+{
+	"_id": "Columbus, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-82.99879419999999,
+			39.9611755
+		]
+	},
+	"city": "Columbus",
+	"county": "Franklin County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Como CO, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			9.0851765,
+			45.8080597
+		]
+	},
+	"city": "Como",
+	"county": "CO",
+	"state": "Lombardia",
+	"country": "IT"
+},
+{
+	"_id": "Concord, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.0310733,
+			37.9779776
+		]
+	},
+	"city": "Concord",
+	"county": "Contra Costa County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Connemara Loop, Co. Galway, Ireland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-9.8447768,
+			53.594765
+		]
+	},
+	"street_name": "Connemara Loop",
+	"county": "Galway",
+	"state": "Galway",
+	"country": "IE"
+},
+{
+	"_id": "Consett, Consett, County Durham DH8, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.833026,
+			54.851797
+		]
+	},
+	"city": "Consett",
+	"postal_code": "DH8",
+	"county": "Dur",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Copenhagen, Denmark",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			12.5683371,
+			55.6760968
+		]
+	},
+	"city": "kbh",
+	"county": "København",
+	"state": "Capital Region of Denmark",
+	"country": "DK"
+},
+{
+	"_id": "Corning, IA 50841, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.73358429999999,
+			40.9869306
+		]
+	},
+	"city": "Corning",
+	"postal_code": "50841",
+	"county": "Adams County",
+	"state": "IA",
+	"country": "US"
+},
+{
+	"_id": "Corpus Christi, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-97.39638099999999,
+			27.8005828
+		]
+	},
+	"city": "Corpus Christi",
+	"county": "Nueces County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Cotonou, Benin",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			2.3912362,
+			6.3702928
+		]
+	},
+	"city": "Cotonou",
+	"county": "Cotonou",
+	"state": "Littoral",
+	"country": "BJ"
+},
+{
+	"_id": "County Hall, 182 Galgorm Rd, Ballymena, Ballymena BT42 1QB, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-6.309746500000001,
+			54.855966
+		]
+	},
+	"street_number": "182",
+	"street_name": "Galgorm Rd",
+	"city": "Ballymena",
+	"postal_code": "BT42 1QB",
+	"county": "Ballymena",
+	"country": "GB"
+},
+{
+	"_id": "Coventry, West Midlands, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.519693,
+			52.406822
+		]
+	},
+	"city": "Coventry",
+	"county": "West Mids",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Cowes, Isle of Wight, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.300533,
+			50.76278500000001
+		]
+	},
+	"city": "Cowes",
+	"county": "IOW",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Culver City, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.3964665,
+			34.0211224
+		]
+	},
+	"city": "Culver City",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Dallas, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.79698789999999,
+			32.7766642
+		]
+	},
+	"city": "Dallas",
+	"county": "Dallas County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Daly City, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.4702079,
+			37.6879241
+		]
+	},
+	"city": "Daly City",
+	"county": "San Mateo County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Dayton, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-84.1916069,
+			39.7589478
+		]
+	},
+	"city": "Dayton",
+	"county": "Montgomery County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Delmar, DE, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-75.57714709999999,
+			38.4565052
+		]
+	},
+	"city": "Delmar",
+	"county": "Sussex County",
+	"state": "DE",
+	"country": "US"
+},
+{
+	"_id": "Denison, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.53665799999999,
+			33.7556593
+		]
+	},
+	"city": "Denison",
+	"county": "Grayson County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Denver, CO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-104.990251,
+			39.7392358
+		]
+	},
+	"city": "Denver",
+	"county": "Denver County",
+	"state": "CO",
+	"country": "US"
+},
+{
+	"_id": "Derry, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-7.195835100000001,
+			54.9690778
+		]
+	},
+	"county": "Derry",
+	"state": "Northern Ireland",
+	"country": "GB"
+},
+{
+	"_id": "Dessau, 06842 Dessau-Roßlau, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			12.2424516,
+			51.8222436
+		]
+	},
+	"city": "Dessau-Roßlau",
+	"postal_code": "06842",
+	"state": "SA",
+	"country": "DE"
+},
+{
+	"_id": "Detroit, MI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.0457538,
+			42.331427
+		]
+	},
+	"city": "Detroit",
+	"county": "Wayne County",
+	"state": "MI",
+	"country": "US"
+},
+{
+	"_id": "Dillingen, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			10.4940239,
+			48.5790918
+		]
+	},
+	"city": "Dillingen",
+	"county": "Swabia",
+	"state": "BY",
+	"country": "DE"
+},
+{
+	"_id": "Dobbs Ferry, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.87263500000002,
+			41.0145418
+		]
+	},
+	"city": "Dobbs Ferry",
+	"county": "Westchester County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Dodge City, KS 67801, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-100.0170787,
+			37.7527982
+		]
+	},
+	"city": "Dodge City",
+	"postal_code": "67801",
+	"county": "Ford County",
+	"state": "KS",
+	"country": "US"
+},
+{
+	"_id": "Douglas, Cork, Ireland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-8.4242008,
+			51.8711662
+		]
+	},
+	"city": "Cork",
+	"county": "Cork City",
+	"state": "Cork",
+	"country": "IE"
+},
+{
+	"_id": "Dover, DE, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-75.5243682,
+			39.158168
+		]
+	},
+	"city": "Dover",
+	"county": "Kent County",
+	"state": "DE",
+	"country": "US"
+},
+{
+	"_id": "Downingtown, PA 19335, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-75.7032742,
+			40.0064958
+		]
+	},
+	"city": "Downingtown",
+	"postal_code": "19335",
+	"county": "Chester County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Dublin, Ireland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-6.2603097,
+			53.3498053
+		]
+	},
+	"city": "Dublin",
+	"county": "Dublin City",
+	"state": "Dublin",
+	"country": "IE"
+},
+{
+	"_id": "Dundee, Dundee City, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.970721,
+			56.462018
+		]
+	},
+	"city": "Dundee",
+	"county": "Dundee City",
+	"state": "Scotland",
+	"country": "GB"
+},
+{
+	"_id": "E Lancashire Rd, United Kingdom",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.4011014,
+			53.5087822
+		]
+	},
+	"street_name": "E Lancashire Rd",
+	"country": "GB"
+},
+{
+	"_id": "East Meadow, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.5590157,
+			40.7139898
+		]
+	},
+	"city": "East Meadow",
+	"county": "Nassau County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Edmonton, AB, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-113.4909267,
+			53.544389
+		]
+	},
+	"city": "Edmonton",
+	"county": "Division No. 11",
+	"state": "AB",
+	"country": "CA"
+},
+{
+	"_id": "Ehrenfeld, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-78.7775214,
+			40.3714629
+		]
+	},
+	"city": "Ehrenfeld",
+	"county": "Cambria County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "El Paso, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-106.4424559,
+			31.7775757
+		]
+	},
+	"city": "El Paso",
+	"county": "El Paso County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Elgin, Elgin, Moray IV30, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-3.318485,
+			57.64945400000001
+		]
+	},
+	"city": "Elgin",
+	"postal_code": "IV30",
+	"county": "Moray",
+	"state": "Scotland",
+	"country": "GB"
+},
+{
+	"_id": "Elkhart, IN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-85.9766671,
+			41.6819935
+		]
+	},
+	"city": "Elkhart",
+	"county": "Elkhart County",
+	"state": "IN",
+	"country": "US"
+},
+{
+	"_id": "Eltham, London SE9, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			0.052639,
+			51.451169
+		]
+	},
+	"city": "London",
+	"postal_code": "SE9",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Ely, Ely, Cambridgeshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			0.262363,
+			52.399539
+		]
+	},
+	"city": "Ely",
+	"county": "Cambs",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Emporia, KS 66801, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.18166260000001,
+			38.403903
+		]
+	},
+	"city": "Emporia",
+	"postal_code": "66801",
+	"county": "Lyon County",
+	"state": "KS",
+	"country": "US"
+},
+{
+	"_id": "Englewood, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9726381,
+			40.8928771
+		]
+	},
+	"city": "Englewood",
+	"county": "Bergen County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Epworth, North Lincolnshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.8218029,
+			53.52903
+		]
+	},
+	"city": "Epworth",
+	"county": "North Lincolnshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Erie, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.085059,
+			42.12922409999999
+		]
+	},
+	"city": "Erie",
+	"county": "Erie County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Essex House, 339 High Rd, Ilford, Greater London IG1 1TE, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			0.081966,
+			51.56090039999999
+		]
+	},
+	"street_number": "339",
+	"street_name": "High Rd",
+	"city": "Ilford",
+	"postal_code": "IG1 1TE",
+	"county": "Gt Lon",
+	"country": "GB"
+},
+{
+	"_id": "Essex, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			0.4690888,
+			51.7343313
+		]
+	},
+	"county": "Essex",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Eve, Coal Township, MO 64741, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.5835683,
+			37.8397621
+		]
+	},
+	"postal_code": "64741",
+	"county": "Vernon County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "Fairport, NY 14450, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-77.44193779999999,
+			43.0986742
+		]
+	},
+	"city": "Fairport",
+	"postal_code": "14450",
+	"county": "Monroe County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Fairview, MO 64842, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.0882656,
+			36.8175665
+		]
+	},
+	"city": "Fairview",
+	"postal_code": "64842",
+	"county": "Newton County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "Faisalabad, Pakistan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			73.07910729999999,
+			31.4187142
+		]
+	},
+	"city": "Faisalabad",
+	"county": "Faisalabad District",
+	"state": "Punjab",
+	"country": "PK"
+},
+{
+	"_id": "Falmouth, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-70.60858859999999,
+			41.5532208
+		]
+	},
+	"city": "Falmouth",
+	"county": "Barnstable County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Fayetteville, NC, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-78.87835849999999,
+			35.0526641
+		]
+	},
+	"city": "Fayetteville",
+	"county": "Cumberland County",
+	"state": "NC",
+	"country": "US"
+},
+{
+	"_id": "Fergus Falls, MN 56537, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.0777887,
+			46.2835212
+		]
+	},
+	"city": "Fergus Falls",
+	"postal_code": "56537",
+	"county": "Otter Tail County",
+	"state": "MN",
+	"country": "US"
+},
+{
+	"_id": "Finsbury Park, London N4, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.107435,
+			51.563296
+		]
+	},
+	"city": "London",
+	"postal_code": "N4",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Flint, MI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.6874562,
+			43.0125274
+		]
+	},
+	"city": "Flint",
+	"county": "Genesee County",
+	"state": "MI",
+	"country": "US"
+},
+{
+	"_id": "Florence, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			11.2558136,
+			43.7695604
+		]
+	},
+	"city": "Florence",
+	"county": "FI",
+	"state": "Tuscany",
+	"country": "IT"
+},
+{
+	"_id": "Fontana, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.435048,
+			34.0922335
+		]
+	},
+	"city": "Fontana",
+	"county": "San Bernardino County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Fort Worth, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-97.3307658,
+			32.7554883
+		]
+	},
+	"city": "Fort Worth",
+	"county": "Tarrant County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Frankfort, IN 46041, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.5108355,
+			40.2794809
+		]
+	},
+	"city": "Frankfort",
+	"postal_code": "46041",
+	"county": "Clinton County",
+	"state": "IN",
+	"country": "US"
+},
+{
+	"_id": "Franklin, KY 42134, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.57721769999999,
+			36.722263
+		]
+	},
+	"city": "Franklin",
+	"postal_code": "42134",
+	"county": "Simpson County",
+	"state": "KY",
+	"country": "US"
+},
+{
+	"_id": "Frinton-on-Sea, Essex, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			1.247224,
+			51.830433
+		]
+	},
+	"city": "Frinton-on-Sea",
+	"county": "Essex",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Gdańsk, Poland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			18.6466384,
+			54.35202520000001
+		]
+	},
+	"city": "Gdańsk",
+	"county": "Gdańsk",
+	"state": "Pomeranian Voivodeship",
+	"country": "PL"
+},
+{
+	"_id": "Gerrards Cross, Buckinghamshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.5575,
+			51.582362
+		]
+	},
+	"city": "Gerrards Cross",
+	"county": "Buckinghamshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Glasgow, Glasgow City, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-4.251806,
+			55.864237
+		]
+	},
+	"city": "Glasgow",
+	"county": "Glasgow City",
+	"state": "Scotland",
+	"country": "GB"
+},
+{
+	"_id": "Granada Hills, Los Angeles, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.5021527,
+			34.2793576
+		]
+	},
+	"city": "LA",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Great Neck, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7284647,
+			40.8006567
+		]
+	},
+	"city": "Great Neck",
+	"county": "Nassau County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Greenfield, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-72.5994104,
+			42.587915
+		]
+	},
+	"city": "Greenfield",
+	"county": "Franklin County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Greenpoint, Brooklyn, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9418603,
+			40.7245448
+		]
+	},
+	"city": "NY",
+	"county": "Kings County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Greenwich, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.6281964,
+			41.0262417
+		]
+	},
+	"city": "Greenwich",
+	"county": "Fairfield County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "Guildford, Guildford, Surrey, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.570409,
+			51.23622
+		]
+	},
+	"city": "Guildford",
+	"county": "Surrey",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Gweedore, Co. Donegal, Ireland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-8.228704,
+			55.0498014
+		]
+	},
+	"city": "Gweedore",
+	"county": "County Donegal",
+	"state": "Donegal",
+	"country": "IE"
+},
+{
+	"_id": "Halifax, NS, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-63.5753196,
+			44.6488625
+		]
+	},
+	"city": "Halifax",
+	"county": "Halifax Regional Municipality",
+	"state": "NS",
+	"country": "CA"
+},
+{
+	"_id": "Hamburg, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			9.9936818,
+			53.5510846
+		]
+	},
+	"city": "Hamburg",
+	"state": "HH",
+	"country": "DE"
+},
+{
+	"_id": "Hamilton, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-70.8431049,
+			42.63620520000001
+		]
+	},
+	"city": "Hamilton",
+	"county": "Essex County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Hamilton, ON, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-79.8660914,
+			43.25002080000001
+		]
+	},
+	"city": "Hamilton",
+	"county": "Hamilton Division",
+	"state": "ON",
+	"country": "CA"
+},
+{
+	"_id": "Hammersmith, London W6, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.2237315,
+			51.4911875
+		]
+	},
+	"city": "London",
+	"postal_code": "W6",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Hanover, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			9.732010400000002,
+			52.3758916
+		]
+	},
+	"city": "Hanover",
+	"state": "NDS",
+	"country": "DE"
+},
+{
+	"_id": "Hartford, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-72.6850932,
+			41.76371109999999
+		]
+	},
+	"city": "Hartford",
+	"county": "Hartford County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "Havana, Cuba",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-82.34518899999999,
+			23.0540698
+		]
+	},
+	"city": "Havana",
+	"state": "Havana",
+	"country": "CU"
+},
+{
+	"_id": "Haverfordwest, Haverfordwest, Pembrokeshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-4.971318999999999,
+			51.800475
+		]
+	},
+	"city": "Haverfordwest",
+	"county": "Pembrokeshire",
+	"state": "Wales",
+	"country": "GB"
+},
+{
+	"_id": "Henley-on-Thames, Henley-on-Thames, Oxfordshire RG9, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.902894,
+			51.535764
+		]
+	},
+	"city": "Henley-on-Thames",
+	"postal_code": "RG9",
+	"county": "Oxfordshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Hereford, Hereford, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.715974,
+			52.05639799999999
+		]
+	},
+	"city": "Hereford",
+	"county": "Herefordshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Hoboken, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.0323626,
+			40.7439905
+		]
+	},
+	"city": "Hoboken",
+	"county": "Hudson County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Hollywood, Los Angeles, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.3286614,
+			34.0928092
+		]
+	},
+	"city": "LA",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Hong Kong",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			114.109497,
+			22.396428
+		]
+	},
+	"country": "HK"
+},
+{
+	"_id": "Houston, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-95.3698028,
+			29.7604267
+		]
+	},
+	"city": "Houston",
+	"county": "Harris County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Hull, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.3367413,
+			53.7456709
+		]
+	},
+	"city": "Hull",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Huntsville, AL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.5861037,
+			34.7303688
+		]
+	},
+	"city": "Huntsville",
+	"county": "Madison County",
+	"state": "AL",
+	"country": "US"
+},
+{
+	"_id": "Ibadan, Nigeria",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			3.9470396,
+			7.3775355
+		]
+	},
+	"city": "Ibadan",
+	"state": "Oyo",
+	"country": "NG"
+},
+{
+	"_id": "Idar-Oberstein, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			7.3071512,
+			49.71452799999999
+		]
+	},
+	"city": "Idar-Oberstein",
+	"state": "RP",
+	"country": "DE"
+},
+{
+	"_id": "Independence, MO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.41550679999999,
+			39.0911161
+		]
+	},
+	"city": "Independence",
+	"county": "Jackson County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "Independence, MS 38618, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-89.8089763,
+			34.70510040000001
+		]
+	},
+	"city": "Independence",
+	"postal_code": "38618",
+	"county": "Tate County",
+	"state": "MS",
+	"country": "US"
+},
+{
+	"_id": "India",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			78.96288,
+			20.593684
+		]
+	},
+	"country": "IN"
+},
+{
+	"_id": "Indiana, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-79.15253489999999,
+			40.6214551
+		]
+	},
+	"city": "Indiana",
+	"county": "Indiana County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Ipswich, Suffolk, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			1.14822,
+			52.056736
+		]
+	},
+	"city": "Ipswich",
+	"county": "Suffk",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Jamshedpur, Jharkhand, India",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			86.2028754,
+			22.8045665
+		]
+	},
+	"city": "Jamshedpur",
+	"county": "East Singhbhum",
+	"state": "JH",
+	"country": "IN"
+},
+{
+	"_id": "Jersey City, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.0776417,
+			40.72815749999999
+		]
+	},
+	"city": "Jersey City",
+	"county": "Hudson County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Jerusalem, Israel",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			35.21371,
+			31.768319
+		]
+	},
+	"city": "י-ם",
+	"state": "Jerusalem District",
+	"country": "IL"
+},
+{
+	"_id": "Jonesboro, AR, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.704279,
+			35.84229670000001
+		]
+	},
+	"city": "Jonesboro",
+	"county": "Craighead County",
+	"state": "AR",
+	"country": "US"
+},
+{
+	"_id": "Kamakura, Kanagawa Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			139.5466868,
+			35.3192254
+		]
+	},
+	"city": "Kamakura",
+	"state": "Kanagawa Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Kanagawa Ward, Yokohama, Kanagawa Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			139.6294307,
+			35.4769011
+		]
+	},
+	"city": "Kanagawa Ward",
+	"state": "Kanagawa Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Kankakee, IL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.8611531,
+			41.1200325
+		]
+	},
+	"city": "Kankakee",
+	"county": "Kankakee County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "Kansas City, MO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.5785667,
+			39.0997265
+		]
+	},
+	"city": "KCMO",
+	"county": "Jackson County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "Kensington, London, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.1932794,
+			51.5010095
+		]
+	},
+	"city": "London",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Kharkiv, Kharkiv Oblast, Ukraine",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			36.230383,
+			49.9935
+		]
+	},
+	"city": "Kharkiv",
+	"state": "Kharkiv Oblast",
+	"country": "UA"
+},
+{
+	"_id": "King George, VA 22485, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-77.18078419999999,
+			38.2664512
+		]
+	},
+	"city": "King George",
+	"postal_code": "22485",
+	"county": "King George County",
+	"state": "VA",
+	"country": "US"
+},
+{
+	"_id": "Kingston, Jamaica",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-76.8099041,
+			18.0178743
+		]
+	},
+	"city": "Kingston",
+	"state": "Saint Andrew Parish",
+	"country": "JM"
+},
+{
+	"_id": "Kingston, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9973608,
+			41.9270367
+		]
+	},
+	"city": "Kingston",
+	"county": "Ulster County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Kirkstall, Leeds, Leeds, West Yorkshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.6017337,
+			53.8157841
+		]
+	},
+	"city": "Leeds",
+	"county": "West York",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Knoxville, TN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.9207392,
+			35.9606384
+		]
+	},
+	"city": "Knoxville",
+	"county": "Knox County",
+	"state": "TN",
+	"country": "US"
+},
+{
+	"_id": "Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			101.686855,
+			3.139003
+		]
+	},
+	"city": "Kuala Lumpur",
+	"state": "Federal Territory of Kuala Lumpur",
+	"country": "MY"
+},
+{
+	"_id": "Kumamoto, Kumamoto Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			130.7078911,
+			32.8031004
+		]
+	},
+	"city": "Kumamoto",
+	"state": "Kumamoto Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Lagos, Nigeria",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			3.3792057,
+			6.5243793
+		]
+	},
+	"city": "Lagos",
+	"state": "Lagos",
+	"country": "NG"
+},
+{
+	"_id": "Lake Success, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7176312,
+			40.7706572
+		]
+	},
+	"city": "Lake Success",
+	"county": "Nassau County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Lake Tahoe, United States",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-120.0323507,
+			39.0968493
+		]
+	},
+	"country": "US"
+},
+{
+	"_id": "Lancashire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.6276908,
+			53.9690089
+		]
+	},
+	"country": "GB"
+},
+{
+	"_id": "Laurel, MD, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-76.8483061,
+			39.0992752
+		]
+	},
+	"city": "Laurel",
+	"county": "Prince George's County",
+	"state": "MD",
+	"country": "US"
+},
+{
+	"_id": "Laurel, NE 68745, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-97.0913752,
+			42.4284687
+		]
+	},
+	"city": "Laurel",
+	"postal_code": "68745",
+	"county": "Cedar County",
+	"state": "NE",
+	"country": "US"
+},
+{
+	"_id": "Lawrenceburg, TN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.33473889999999,
+			35.2423023
+		]
+	},
+	"city": "Lawrenceburg",
+	"county": "Lawrence County",
+	"state": "TN",
+	"country": "US"
+},
+{
+	"_id": "Leeds, West Yorkshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.5490774,
+			53.8007554
+		]
+	},
+	"city": "Leeds",
+	"county": "West York",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Leipzig, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			12.3730747,
+			51.3396955
+		]
+	},
+	"city": "Leipzig",
+	"county": "Leipzig",
+	"state": "SN",
+	"country": "DE"
+},
+{
+	"_id": "Lemay, MO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.2854839,
+			38.5319368
+		]
+	},
+	"city": "Lemay",
+	"county": "St Louis County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "Lexington, KY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-84.5037164,
+			38.0405837
+		]
+	},
+	"city": "Lexington",
+	"county": "Fayette County",
+	"state": "KY",
+	"country": "US"
+},
+{
+	"_id": "Leytonstone, London E11, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			0.0099831,
+			51.5684629
+		]
+	},
+	"city": "London",
+	"postal_code": "E11",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Limerick, Ireland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-8.630497499999999,
+			52.6680204
+		]
+	},
+	"city": "Limerick",
+	"county": "Limerick City",
+	"state": "Limerick",
+	"country": "IE"
+},
+{
+	"_id": "Linz, Austria",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			14.28583,
+			48.30694
+		]
+	},
+	"city": "Linz",
+	"county": "Linz",
+	"state": "Upper Austria",
+	"country": "AT"
+},
+{
+	"_id": "Littleton, CO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-105.0166498,
+			39.613321
+		]
+	},
+	"city": "Littleton",
+	"county": "Arapahoe County",
+	"state": "CO",
+	"country": "US"
+},
+{
+	"_id": "Loma Linda, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.2611527,
+			34.0483474
+		]
+	},
+	"city": "Loma Linda",
+	"county": "San Bernardino County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Lombard, IL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-88.00784349999999,
+			41.8800296
+		]
+	},
+	"city": "Lombard",
+	"county": "Dupage County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "London, ON, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-81.243177,
+			42.9869502
+		]
+	},
+	"city": "London",
+	"county": "Middlesex County",
+	"state": "ON",
+	"country": "CA"
+},
+{
+	"_id": "London, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.1277583,
+			51.5073509
+		]
+	},
+	"city": "London",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Long Beach, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.1937395,
+			33.7700504
+		]
+	},
+	"city": "Long Beach",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Los Angeles County, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.2436596,
+			34.0522265
+		]
+	},
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Los Angeles, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.2436849,
+			34.0522342
+		]
+	},
+	"city": "LA",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Louisville, KY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-85.7584557,
+			38.2526647
+		]
+	},
+	"city": "Louisville",
+	"county": "Jefferson County",
+	"state": "KY",
+	"country": "US"
+},
+{
+	"_id": "Lviv, Lviv Oblast, Ukraine",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			24.029717,
+			49.839683
+		]
+	},
+	"city": "Lviv",
+	"state": "Lviv Oblast",
+	"country": "UA"
+},
+{
+	"_id": "Madrid, Madrid, Spain",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-3.7037902,
+			40.4167754
+		]
+	},
+	"city": "Madrid",
+	"county": "M",
+	"state": "Community of Madrid",
+	"country": "ES"
+},
+{
+	"_id": "Malta",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			14.375416,
+			35.937496
+		]
+	},
+	"country": "MT"
+},
+{
+	"_id": "Manchester, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.2426305,
+			53.4807593
+		]
+	},
+	"city": "Manchester",
+	"county": "Gt Man",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Manhattan, New York, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9712488,
+			40.7830603
+		]
+	},
+	"city": "NY",
+	"county": "New York County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Margam Country Park, Port Talbot, West Glamorgan SA13 2TJ, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-3.780069,
+			51.592611
+		]
+	},
+	"city": "Port Talbot",
+	"postal_code": "SA13 2TJ",
+	"county": "West Glamorgan",
+	"country": "GB"
+},
+{
+	"_id": "Marylebone, London W1G, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.1498955,
+			51.5188746
+		]
+	},
+	"city": "London",
+	"postal_code": "W1G",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Massapequa, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.4742914,
+			40.6806563
+		]
+	},
+	"city": "Massapequa",
+	"county": "Nassau County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Medford, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.1061639,
+			42.4184296
+		]
+	},
+	"city": "Medford",
+	"county": "Middlesex County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Melbourne VIC, Australia",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			144.96328,
+			-37.814107
+		]
+	},
+	"city": "Melbourne",
+	"state": "VIC",
+	"country": "AU"
+},
+{
+	"_id": "Memphis, TN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.0489801,
+			35.1495343
+		]
+	},
+	"city": "Memphis",
+	"county": "Shelby County",
+	"state": "TN",
+	"country": "US"
+},
+{
+	"_id": "Merced, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-120.4829677,
+			37.3021632
+		]
+	},
+	"city": "Merced",
+	"county": "Merced County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Meridian, MS, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-88.703656,
+			32.3643098
+		]
+	},
+	"city": "Meridian",
+	"county": "Lauderdale County",
+	"state": "MS",
+	"country": "US"
+},
+{
+	"_id": "Midland, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-102.0779146,
+			31.9973456
+		]
+	},
+	"city": "Midland",
+	"county": "Midland County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Milford on Sea, Hampshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.5897619,
+			50.725731
+		]
+	},
+	"city": "Milford on Sea",
+	"county": "Hants",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Milford, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.064036,
+			41.2306979
+		]
+	},
+	"city": "Milford",
+	"county": "New Haven County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "Milwaukee, WI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.9064736,
+			43.0389025
+		]
+	},
+	"city": "Milw",
+	"county": "Milwaukee County",
+	"state": "WI",
+	"country": "US"
+},
+{
+	"_id": "Minneapolis, MN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-93.2650108,
+			44.977753
+		]
+	},
+	"city": "Minneapolis",
+	"county": "Hennepin County",
+	"state": "MN",
+	"country": "US"
+},
+{
+	"_id": "Modesto, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-120.9968782,
+			37.63909719999999
+		]
+	},
+	"city": "Modesto",
+	"county": "Stanislaus County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Mumbai, Maharashtra, India",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			72.8776559,
+			19.0759837
+		]
+	},
+	"city": "Mumbai",
+	"county": "Mumbai",
+	"state": "MH",
+	"country": "IN"
+},
+{
+	"_id": "Munich, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			11.5819806,
+			48.1351253
+		]
+	},
+	"city": "M",
+	"county": "Upper Bavaria",
+	"state": "BY",
+	"country": "DE"
+},
+{
+	"_id": "Myrtle Beach, SC, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-78.8866943,
+			33.6890603
+		]
+	},
+	"city": "Myrtle Beach",
+	"county": "Horry County",
+	"state": "SC",
+	"country": "US"
+},
+{
+	"_id": "Nairobi, Kenya",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			36.8219462,
+			-1.2920659
+		]
+	},
+	"city": "Nairobi",
+	"state": "Nairobi",
+	"country": "KE"
+},
+{
+	"_id": "Nevada, MO 64772, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.3546719,
+			37.83920519999999
+		]
+	},
+	"city": "Nevada",
+	"postal_code": "64772",
+	"county": "Vernon County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "New Balderton, Newark, Nottinghamshire NG24, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.784675,
+			53.0605199
+		]
+	},
+	"city": "New Balderton",
+	"postal_code": "NG24",
+	"county": "Nottinghamshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "New Cross, London SE14, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.040245,
+			51.471022
+		]
+	},
+	"city": "London",
+	"postal_code": "SE14",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "New Haven, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-72.9278835,
+			41.308274
+		]
+	},
+	"city": "New Haven",
+	"county": "New Haven County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "New London, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-72.0995209,
+			41.3556539
+		]
+	},
+	"city": "New London",
+	"county": "New London County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "New Orleans, LA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.0715323,
+			29.95106579999999
+		]
+	},
+	"city": "New Orleans",
+	"county": "Orleans Parish",
+	"state": "LA",
+	"country": "US"
+},
+{
+	"_id": "New Rochelle, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7823549,
+			40.9114882
+		]
+	},
+	"city": "New Rochelle",
+	"county": "Westchester County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "New York, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.0059413,
+			40.7127837
+		]
+	},
+	"city": "NY",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Newark, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.1723667,
+			40.735657
+		]
+	},
+	"city": "Newark",
+	"county": "Essex County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Newport News, VA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-76.4730122,
+			37.0870821
+		]
+	},
+	"city": "Newport News",
+	"state": "VA",
+	"country": "US"
+},
+{
+	"_id": "Newport, RI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.3128285,
+			41.4901024
+		]
+	},
+	"city": "Newport",
+	"county": "Newport County",
+	"state": "RI",
+	"country": "US"
+},
+{
+	"_id": "Newry, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-6.1663833,
+			54.1453111
+		]
+	},
+	"country": "GB"
+},
+{
+	"_id": "Newton, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.20922139999999,
+			42.3370413
+		]
+	},
+	"city": "Newton",
+	"county": "Middlesex County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Norman, OK, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-97.4394777,
+			35.2225668
+		]
+	},
+	"city": "Norman",
+	"county": "Cleveland County",
+	"state": "OK",
+	"country": "US"
+},
+{
+	"_id": "Norristown, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-75.3399048,
+			40.121497
+		]
+	},
+	"city": "Norristown",
+	"county": "Montgomery County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "North Adams, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.1087148,
+			42.70091499999999
+		]
+	},
+	"city": "North Adams",
+	"county": "Berkshire County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Oakland, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.2711137,
+			37.8043637
+		]
+	},
+	"city": "Oakland",
+	"county": "Alameda County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Oklahoma City, OK, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-97.5164276,
+			35.4675602
+		]
+	},
+	"city": "Oklahoma City",
+	"county": "Oklahoma County",
+	"state": "OK",
+	"country": "US"
+},
+{
+	"_id": "Omaha, NE, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-95.99798829999999,
+			41.2523634
+		]
+	},
+	"city": "Omaha",
+	"county": "Douglas County",
+	"state": "NE",
+	"country": "US"
+},
+{
+	"_id": "Osaka, Osaka Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			135.5021651,
+			34.6937378
+		]
+	},
+	"city": "Osaka",
+	"state": "Osaka Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Owensboro, KY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.1111676,
+			37.7719074
+		]
+	},
+	"city": "Owensboro",
+	"county": "Daviess County",
+	"state": "KY",
+	"country": "US"
+},
+{
+	"_id": "Oxford, Oxford, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.2577263,
+			51.7520209
+		]
+	},
+	"city": "Oxford",
+	"county": "Oxfordshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Palma, Balearic Islands, Spain",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			2.6501603,
+			39.5696005
+		]
+	},
+	"city": "Palma",
+	"county": "Balearic Islands",
+	"state": "PM",
+	"country": "ES"
+},
+{
+	"_id": "Paris, France",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			2.3522219,
+			48.856614
+		]
+	},
+	"city": "Paris",
+	"county": "Paris",
+	"state": "IDF",
+	"country": "FR"
+},
+{
+	"_id": "Pasadena, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.1445155,
+			34.1477849
+		]
+	},
+	"city": "Pasadena",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Pauls Valley, OK, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-97.22224510000001,
+			34.7400809
+		]
+	},
+	"city": "Pauls Valley",
+	"county": "Garvin County",
+	"state": "OK",
+	"country": "US"
+},
+{
+	"_id": "Peekskill, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9204158,
+			41.2900939
+		]
+	},
+	"city": "Peekskill",
+	"county": "Westchester County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Perth Amboy, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.2654234,
+			40.5067723
+		]
+	},
+	"city": "Perth Amboy",
+	"county": "Middlesex County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Peterborough, ON, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-78.31974699999999,
+			44.309058
+		]
+	},
+	"city": "Peterborough",
+	"county": "Peterborough County",
+	"state": "ON",
+	"country": "CA"
+},
+{
+	"_id": "Petersburg, VA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-77.40192669999999,
+			37.2279279
+		]
+	},
+	"city": "Petersburg",
+	"state": "VA",
+	"country": "US"
+},
+{
+	"_id": "Philadelphia, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-75.1652215,
+			39.9525839
+		]
+	},
+	"city": "Philadelphia",
+	"county": "Philadelphia County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Pistoia PT, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			10.9078587,
+			43.9303475
+		]
+	},
+	"city": "Pistoia",
+	"county": "PT",
+	"state": "Toscana",
+	"country": "IT"
+},
+{
+	"_id": "Pittsburgh, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-79.9958864,
+			40.44062479999999
+		]
+	},
+	"city": "Pitts",
+	"county": "Allegheny County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Pittsfield, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.2453824,
+			42.4500845
+		]
+	},
+	"city": "Pittsfield",
+	"county": "Berkshire County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Pleasant Lake, IN 46779, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-85.0160765,
+			41.5753282
+		]
+	},
+	"city": "Pleasant Lake",
+	"postal_code": "46779",
+	"county": "Steuben County",
+	"state": "IN",
+	"country": "US"
+},
+{
+	"_id": "Poland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			19.145136,
+			51.919438
+		]
+	},
+	"country": "PL"
+},
+{
+	"_id": "Ponce, Ponce, Puerto Rico",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-66.6140616,
+			18.0110768
+		]
+	},
+	"city": "Ponce",
+	"state": "Ponce",
+	"country": "PR"
+},
+{
+	"_id": "Potsdam, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			13.0644729,
+			52.3905689
+		]
+	},
+	"city": "P",
+	"state": "BB",
+	"country": "DE"
+},
+{
+	"_id": "Providence, RI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.4128343,
+			41.8239891
+		]
+	},
+	"city": "Prov",
+	"county": "Providence County",
+	"state": "RI",
+	"country": "US"
+},
+{
+	"_id": "Pueblo, CO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-104.6091409,
+			38.2544472
+		]
+	},
+	"city": "Pueblo",
+	"county": "Pueblo County",
+	"state": "CO",
+	"country": "US"
+},
+{
+	"_id": "Puerto Rico",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-66.590149,
+			18.220833
+		]
+	},
+	"country": "PR"
+},
+{
+	"_id": "Queens, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7948516,
+			40.7282239
+		]
+	},
+	"city": "NY",
+	"county": "Queens County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Racine, WI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.78285230000002,
+			42.7261309
+		]
+	},
+	"city": "Racine",
+	"county": "Racine County",
+	"state": "WI",
+	"country": "US"
+},
+{
+	"_id": "Raetihi, New Zealand",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			175.2817343,
+			-39.4269651
+		]
+	},
+	"city": "Raetihi",
+	"county": "Ruapehu District",
+	"state": "Manawatu-Wanganui",
+	"country": "NZ"
+},
+{
+	"_id": "Recklinghausen, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			7.1979453,
+			51.6140649
+		]
+	},
+	"city": "Recklinghausen",
+	"county": "Münster",
+	"state": "NRW",
+	"country": "DE"
+},
+{
+	"_id": "Red Bank, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.0643065,
+			40.3470543
+		]
+	},
+	"city": "Red Bank",
+	"county": "Monmouth County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Rochester, MN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-92.4801989,
+			44.0121221
+		]
+	},
+	"city": "Rochester",
+	"county": "Olmsted County",
+	"state": "MN",
+	"country": "US"
+},
+{
+	"_id": "Rochester, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-77.6109219,
+			43.16103
+		]
+	},
+	"city": "Rochester",
+	"county": "Monroe County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Roehampton, London SW15, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.245483,
+			51.453886
+		]
+	},
+	"city": "London",
+	"postal_code": "SW15",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Rogersville, TN 37857, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.0054423,
+			36.407317
+		]
+	},
+	"city": "Rogersville",
+	"postal_code": "37857",
+	"county": "Hawkins County",
+	"state": "TN",
+	"country": "US"
+},
+{
+	"_id": "Rome, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			12.4963655,
+			41.9027835
+		]
+	},
+	"city": "Rome",
+	"county": "RM",
+	"state": "Lazio",
+	"country": "IT"
+},
+{
+	"_id": "Rotherhithe, London SE16, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.04599210000000001,
+			51.4982345
+		]
+	},
+	"city": "London",
+	"postal_code": "SE16",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Sacramento, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-121.4943996,
+			38.5815719
+		]
+	},
+	"city": "Sacramento",
+	"county": "Sacramento County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Saginaw, MI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.9508068,
+			43.4194699
+		]
+	},
+	"city": "Saginaw",
+	"county": "Saginaw County",
+	"state": "MI",
+	"country": "US"
+},
+{
+	"_id": "Saint John, NB, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-66.0633081,
+			45.2733153
+		]
+	},
+	"city": "Saint John",
+	"county": "Saint John County",
+	"state": "NB",
+	"country": "CA"
+},
+{
+	"_id": "Salt Lake City, UT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-111.8910474,
+			40.7607793
+		]
+	},
+	"city": "Salt Lake City",
+	"county": "Salt Lake County",
+	"state": "UT",
+	"country": "US"
+},
+{
+	"_id": "San Bernardino, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.2897652,
+			34.1083449
+		]
+	},
+	"city": "San Bernardino",
+	"county": "San Bernardino County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "San Diego, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.1610838,
+			32.715738
+		]
+	},
+	"city": "San Diego",
+	"county": "San Diego County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "San Francisco, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.4194155,
+			37.7749295
+		]
+	},
+	"city": "SF",
+	"county": "San Francisco County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "San Juan, San Juan, Puerto Rico",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-66.1057217,
+			18.4663338
+		]
+	},
+	"city": "San Juan",
+	"state": "San Juan",
+	"country": "PR"
+},
+{
+	"_id": "San Mateo, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.3255254,
+			37.5629917
+		]
+	},
+	"city": "San Mateo",
+	"county": "San Mateo County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Sandwich, Kent, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			1.337427,
+			51.274017
+		]
+	},
+	"city": "Sandwich",
+	"county": "Kent",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Santa Ana, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.8678338,
+			33.7455731
+		]
+	},
+	"city": "Santa Ana",
+	"county": "Orange County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Santa Barbara, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-119.6981901,
+			34.4208305
+		]
+	},
+	"city": "Santa Barbara",
+	"county": "Santa Barbara County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Santa Monica, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.4911912,
+			34.0194543
+		]
+	},
+	"city": "Santa Monica",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Santurce, San Juan, San Juan, Puerto Rico",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-66.0641969,
+			18.4481441
+		]
+	},
+	"city": "San Juan",
+	"state": "San Juan",
+	"country": "PR"
+},
+{
+	"_id": "Sarajevo, Bosnia and Herzegovina",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			18.4130763,
+			43.8562586
+		]
+	},
+	"city": "Sarajevo",
+	"county": "Kanton Sarajevo",
+	"state": "Federation of Bosnia and Herzegovina",
+	"country": "BA"
+},
+{
+	"_id": "Saugus, Santa Clarita, CA 91350, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.5400858,
+			34.4113854
+		]
+	},
+	"city": "Santa Clarita",
+	"postal_code": "91350",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Schenectady, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.9395687,
+			42.8142432
+		]
+	},
+	"city": "Schenectady",
+	"county": "Schenectady County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Scottsdale, AZ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-111.9260519,
+			33.4941704
+		]
+	},
+	"city": "Scottsdale",
+	"county": "Maricopa County",
+	"state": "AZ",
+	"country": "US"
+},
+{
+	"_id": "Seattle, WA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.3320708,
+			47.6062095
+		]
+	},
+	"city": "Seattle",
+	"county": "King County",
+	"state": "WA",
+	"country": "US"
+},
+{
+	"_id": "Sefton, Liverpool, Merseyside L29, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.970359,
+			53.503445
+		]
+	},
+	"city": "Sefton",
+	"postal_code": "L29",
+	"county": "Mersyd",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Seoul, South Korea",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			126.9779692,
+			37.566535
+		]
+	},
+	"city": "Seoul",
+	"country": "KR"
+},
+{
+	"_id": "Shawnee, OK, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.9253004,
+			35.3272928
+		]
+	},
+	"city": "Shawnee",
+	"county": "Pottawatomie County",
+	"state": "OK",
+	"country": "US"
+},
+{
+	"_id": "Shenyang, Liaoning, China",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			123.431472,
+			41.805699
+		]
+	},
+	"city": "Shenyang",
+	"state": "Liaoning",
+	"country": "CN"
+},
+{
+	"_id": "Shimane Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			133.0504997,
+			35.4722952
+		]
+	},
+	"state": "Shimane Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Shirebrook, Mansfield, Derbyshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.217961,
+			53.2019189
+		]
+	},
+	"city": "Shirebrook",
+	"county": "Derbys",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Silver Spring, MD, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-77.026088,
+			38.99066570000001
+		]
+	},
+	"city": "Silver Spring",
+	"county": "Montgomery County",
+	"state": "MD",
+	"country": "US"
+},
+{
+	"_id": "Six Nations Indian Reserve No. 40, ON, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.0814292,
+			43.0483041
+		]
+	},
+	"county": "Brant County",
+	"state": "ON",
+	"country": "CA"
+},
+{
+	"_id": "South Dakota, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-99.9018131,
+			43.9695148
+		]
+	},
+	"state": "SD",
+	"country": "US"
+},
+{
+	"_id": "South Orange, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.2609903,
+			40.7489277
+		]
+	},
+	"city": "South Orange",
+	"county": "Essex County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Spokane, WA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.4260466,
+			47.6587802
+		]
+	},
+	"city": "Spokane",
+	"county": "Spokane County",
+	"state": "WA",
+	"country": "US"
+},
+{
+	"_id": "St Joseph, MO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-94.84668099999999,
+			39.7674578
+		]
+	},
+	"city": "St Joseph",
+	"county": "Buchanan County",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "St Louis, MO, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.19940419999999,
+			38.6270025
+		]
+	},
+	"city": "St Louis",
+	"state": "MO",
+	"country": "US"
+},
+{
+	"_id": "St Petersburg, Russia",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			30.3350986,
+			59.9342802
+		]
+	},
+	"city": "СПБ",
+	"county": "g. Sankt-Peterburg",
+	"state": "Saint Petersburg",
+	"country": "RU"
+},
+{
+	"_id": "Stamford, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.5387341,
+			41.0534302
+		]
+	},
+	"city": "Stamford",
+	"county": "Fairfield County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "Statesboro, GA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-81.7831674,
+			32.4487876
+		]
+	},
+	"city": "Statesboro",
+	"county": "Bulloch County",
+	"state": "GA",
+	"country": "US"
+},
+{
+	"_id": "Stockholm, Sweden",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			18.0685808,
+			59.32932349999999
+		]
+	},
+	"city": "Stockholm",
+	"county": "Stockholm",
+	"state": "Stockholm County",
+	"country": "SE"
+},
+{
+	"_id": "Suhl, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			10.6881255,
+			50.6076846
+		]
+	},
+	"city": "SHL",
+	"state": "Thuringia",
+	"country": "DE"
+},
+{
+	"_id": "Sunderland, Tyne and Wear, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.383801,
+			54.906869
+		]
+	},
+	"city": "Sunderland",
+	"county": "T \u0026 W",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Swansea, Swansea, Swansea, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-3.943645999999999,
+			51.62144
+		]
+	},
+	"city": "Swansea",
+	"county": "Swansea",
+	"state": "Wales",
+	"country": "GB"
+},
+{
+	"_id": "Sydney NSW, Australia",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			151.2069902,
+			-33.8674869
+		]
+	},
+	"city": "Sydney",
+	"state": "NSW",
+	"country": "AU"
+},
+{
+	"_id": "Syracuse, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-76.14742439999999,
+			43.0481221
+		]
+	},
+	"city": "Syracuse",
+	"county": "Onondaga County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Szczecin, Poland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			14.5528116,
+			53.4285438
+		]
+	},
+	"city": "Szczecin",
+	"county": "Szczecin",
+	"state": "West Pomeranian Voivodeship",
+	"country": "PL"
+},
+{
+	"_id": "Teaneck, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.0116536,
+			40.8932469
+		]
+	},
+	"city": "Teaneck",
+	"county": "Bergen County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Tegucigalpa, Honduras",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.19213599999999,
+			14.0722751
+		]
+	},
+	"city": "TGU",
+	"state": "Francisco Morazan",
+	"country": "HN"
+},
+{
+	"_id": "Terre Haute, IN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.41390919999999,
+			39.4667034
+		]
+	},
+	"city": "Terre Haute",
+	"county": "Vigo County",
+	"state": "IN",
+	"country": "US"
+},
+{
+	"_id": "Terrell, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.2752569,
+			32.7359626
+		]
+	},
+	"city": "Terrell",
+	"county": "Kaufman County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Tokyo, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			139.7319925,
+			35.7090259
+		]
+	},
+	"city": "Tokyo",
+	"country": "JP"
+},
+{
+	"_id": "Toledo, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.55521200000001,
+			41.6639383
+		]
+	},
+	"city": "Toledo",
+	"county": "Lucas County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Topeka, KS, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-95.68901849999999,
+			39.0558235
+		]
+	},
+	"city": "Topeka",
+	"county": "Shawnee County",
+	"state": "KS",
+	"country": "US"
+},
+{
+	"_id": "Toronto, ON, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-79.3831843,
+			43.653226
+		]
+	},
+	"city": "Toronto",
+	"county": "Toronto Division",
+	"state": "ON",
+	"country": "CA"
+},
+{
+	"_id": "Trenton, NJ, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-74.7429384,
+			40.2170534
+		]
+	},
+	"city": "Trenton",
+	"county": "Mercer County",
+	"state": "NJ",
+	"country": "US"
+},
+{
+	"_id": "Trieste, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			13.7768182,
+			45.6495264
+		]
+	},
+	"city": "Trieste",
+	"county": "TS",
+	"state": "Friuli-Venezia Giulia",
+	"country": "IT"
+},
+{
+	"_id": "Trinidad, CO 81082, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-104.5005407,
+			37.1694632
+		]
+	},
+	"city": "Trinidad",
+	"postal_code": "81082",
+	"county": "Las Animas County",
+	"state": "CO",
+	"country": "US"
+},
+{
+	"_id": "Tulsa, OK, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-95.99277500000001,
+			36.1539816
+		]
+	},
+	"city": "Tulsa",
+	"county": "Tulsa County",
+	"state": "OK",
+	"country": "US"
+},
+{
+	"_id": "Tyler, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-95.30106239999999,
+			32.3512601
+		]
+	},
+	"city": "Tyler",
+	"county": "Smith County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Union, KY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-84.68050099999999,
+			38.9458951
+		]
+	},
+	"city": "Union",
+	"county": "Boone County",
+	"state": "KY",
+	"country": "US"
+},
+{
+	"_id": "United States",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-95.712891,
+			37.09024
+		]
+	},
+	"country": "US"
+},
+{
+	"_id": "Uonuma, Niigata Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			138.924361,
+			37.2441239
+		]
+	},
+	"city": "Uonuma",
+	"state": "Niigata Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Urbana, OH 43078, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.7524298,
+			40.1083912
+		]
+	},
+	"city": "Urbana",
+	"postal_code": "43078",
+	"county": "Champaign County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Uvalde, TX 78801, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-99.7861679,
+			29.20968359999999
+		]
+	},
+	"city": "Uvalde",
+	"postal_code": "78801",
+	"county": "Uvalde County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Vancouver, BC, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-123.1207375,
+			49.2827291
+		]
+	},
+	"city": "Vancouver",
+	"county": "Greater Vancouver",
+	"state": "BC",
+	"country": "CA"
+},
+{
+	"_id": "Vancouver, WA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-122.6614861,
+			45.6387281
+		]
+	},
+	"city": "Vancouver",
+	"county": "Clark County",
+	"state": "WA",
+	"country": "US"
+},
+{
+	"_id": "Via manciano, 52043 Castiglion fiorentino AR, Italy",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			11.8789152,
+			43.3245087
+		]
+	},
+	"street_name": "Via manciano",
+	"postal_code": "52043",
+	"county": "AR",
+	"state": "Toscana",
+	"country": "IT"
+},
+{
+	"_id": "Vienna, Austria",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			16.3738189,
+			48.2081743
+		]
+	},
+	"city": "Vienna",
+	"state": "Vienna",
+	"country": "AT"
+},
+{
+	"_id": "Viroqua, WI 54665, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-90.88874129999999,
+			43.5569174
+		]
+	},
+	"city": "Viroqua",
+	"postal_code": "54665",
+	"county": "Vernon County",
+	"state": "WI",
+	"country": "US"
+},
+{
+	"_id": "Wabasha, MN, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-92.0382346,
+			44.3710051
+		]
+	},
+	"city": "Wabasha",
+	"county": "Wabasha County",
+	"state": "MN",
+	"country": "US"
+},
+{
+	"_id": "Walworth, London SE17, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.09289689999999999,
+			51.489876
+		]
+	},
+	"city": "London",
+	"postal_code": "SE17",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Warrington, Warrington, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-2.5969501,
+			53.3900441
+		]
+	},
+	"city": "Warrington",
+	"county": "Warrington",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Warsaw, Poland",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			21.0122287,
+			52.2296756
+		]
+	},
+	"city": "Warsaw",
+	"county": "Warszawa",
+	"state": "Masovian Voivodeship",
+	"country": "PL"
+},
+{
+	"_id": "Washington, DC, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-77.0368707,
+			38.9071923
+		]
+	},
+	"city": "D.C.",
+	"county": "District of Columbia",
+	"state": "DC",
+	"country": "US"
+},
+{
+	"_id": "Waterbury, CT, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.0514965,
+			41.5581525
+		]
+	},
+	"city": "Waterbury",
+	"county": "New Haven County",
+	"state": "CT",
+	"country": "US"
+},
+{
+	"_id": "Waterloo, ON, Canada",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.5204096,
+			43.4642578
+		]
+	},
+	"city": "Waterloo",
+	"county": "Waterloo Regional Municipality",
+	"state": "ON",
+	"country": "CA"
+},
+{
+	"_id": "Watertown, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.1828321,
+			42.3709299
+		]
+	},
+	"city": "Watertown",
+	"county": "Middlesex County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Waxahachie, TX, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-96.8483311,
+			32.3865312
+		]
+	},
+	"city": "Waxahachie",
+	"county": "Ellis County",
+	"state": "TX",
+	"country": "US"
+},
+{
+	"_id": "Wellington, New Zealand",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			174.776236,
+			-41.2864603
+		]
+	},
+	"city": "Wellington",
+	"county": "Wellington City",
+	"state": "Wellington",
+	"country": "NZ"
+},
+{
+	"_id": "West Covina, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-117.9389526,
+			34.0686208
+		]
+	},
+	"city": "West Covina",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "West Hollywood, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.3617443,
+			34.0900091
+		]
+	},
+	"city": "West Hollywood",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "West Irvine, KY 40336, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-83.990758,
+			37.7014712
+		]
+	},
+	"city": "West Irvine",
+	"postal_code": "40336",
+	"county": "Estill County",
+	"state": "KY",
+	"country": "US"
+},
+{
+	"_id": "Westchester County, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7948516,
+			41.1220194
+		]
+	},
+	"county": "Westchester County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Wetumpka, AL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-86.2119127,
+			32.5437448
+		]
+	},
+	"city": "Wetumpka",
+	"county": "Elmore County",
+	"state": "AL",
+	"country": "US"
+},
+{
+	"_id": "White Plains, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.7629097,
+			41.03398620000001
+		]
+	},
+	"city": "White Plains",
+	"county": "Westchester County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Whitechapel, London E1, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.0707284,
+			51.5139486
+		]
+	},
+	"city": "London",
+	"postal_code": "E1",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Whitewater, WI, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-88.7323272,
+			42.83362049999999
+		]
+	},
+	"city": "Whitewater",
+	"county": "Walworth County",
+	"state": "WI",
+	"country": "US"
+},
+{
+	"_id": "Whittier, CA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-118.032844,
+			33.9791793
+		]
+	},
+	"city": "Whittier",
+	"county": "Los Angeles County",
+	"state": "CA",
+	"country": "US"
+},
+{
+	"_id": "Wilmette, IL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.7228384,
+			42.0722513
+		]
+	},
+	"city": "Wilmette",
+	"county": "Cook County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "Wimbledon, London, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.2206288,
+			51.41833889999999
+		]
+	},
+	"city": "London",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Winnetka, IL, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-87.735895,
+			42.10808340000001
+		]
+	},
+	"city": "Winnetka",
+	"county": "Cook County",
+	"state": "IL",
+	"country": "US"
+},
+{
+	"_id": "Witten, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			7.353197000000001,
+			51.4438926
+		]
+	},
+	"city": "Witten",
+	"county": "Arnsberg",
+	"state": "NRW",
+	"country": "DE"
+},
+{
+	"_id": "Wood Green, London, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-0.1089432,
+			51.5964823
+		]
+	},
+	"city": "London",
+	"county": "Gt Lon",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Woodhaven, Queens, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.8566087,
+			40.6901366
+		]
+	},
+	"city": "NY",
+	"county": "Queens County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Woodside, Queens, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.90364869999999,
+			40.7512123
+		]
+	},
+	"city": "NY",
+	"county": "Queens County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "Wooster, OH 44691, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-81.935143,
+			40.8050565
+		]
+	},
+	"city": "Wooster",
+	"postal_code": "44691",
+	"county": "Wayne County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Worcester, MA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-71.8022934,
+			42.2625932
+		]
+	},
+	"city": "Worcester",
+	"county": "Worcester County",
+	"state": "MA",
+	"country": "US"
+},
+{
+	"_id": "Worksop, Worksop, Nottinghamshire, UK",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-1.122745,
+			53.309302
+		]
+	},
+	"city": "Worksop",
+	"county": "Nottinghamshire",
+	"state": "England",
+	"country": "GB"
+},
+{
+	"_id": "Yakima, WA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-120.5058987,
+			46.6020711
+		]
+	},
+	"city": "Yakima",
+	"county": "Yakima County",
+	"state": "WA",
+	"country": "US"
+},
+{
+	"_id": "Yamanashi Prefecture, Japan",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			138.5684486,
+			35.6641575
+		]
+	},
+	"state": "Yamanashi Prefecture",
+	"country": "JP"
+},
+{
+	"_id": "Yonkers, NY, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-73.89874689999999,
+			40.9312099
+		]
+	},
+	"city": "Yonkers",
+	"county": "Westchester County",
+	"state": "NY",
+	"country": "US"
+},
+{
+	"_id": "York, PA, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-76.727745,
+			39.9625984
+		]
+	},
+	"city": "York",
+	"county": "York County",
+	"state": "PA",
+	"country": "US"
+},
+{
+	"_id": "Youngstown, OH, USA",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			-80.6495194,
+			41.0997803
+		]
+	},
+	"city": "Youngstown",
+	"county": "Mahoning County",
+	"state": "OH",
+	"country": "US"
+},
+{
+	"_id": "Zwingenberg, Germany",
+	"geolocation": {
+		"type": "Point",
+		"coordinates": [
+			8.6109755,
+			49.7250007
+		]
+	},
+	"city": "Zwingenberg",
+	"county": "DA",
+	"state": "HE",
+	"country": "DE"
+}]
+

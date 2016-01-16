@@ -1,0 +1,99 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @movie.title %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @movie.type %>
+</p>
+
+<p>
+  <strong>Rated:</strong>
+  <%= @movie.rated %>
+</p>
+
+<p>
+  <strong>Year:</strong>
+  <%= @movie.year %>
+</p>
+
+<p>
+  <strong>Release date:</strong>
+  <%= @movie.release_date %>
+</p>
+
+<p>
+  <strong>Runtime:</strong>
+  <%= @movie.runtime %>
+</p>
+
+<p>
+  <strong>Votes:</strong>
+  <%= @movie.votes %>
+</p>
+
+<p>
+  <strong>Countries:</strong>
+  <%= @movie.countries %>
+</p>
+
+<p>
+  <strong>Languages:</strong>
+  <%= @movie.languages %>
+</p>
+
+<p>
+  <strong>Genres:</strong>
+  <%= @movie.genres %>
+</p>
+
+<p>
+  <strong>Filming locations:</strong>
+  <%= @movie.filming_locations %>
+</p>
+
+<p>
+  <strong>Metascore:</strong>
+  <%= @movie.metascore %>
+</p>
+
+<p>
+  <strong>Simple plot:</strong>
+  <%= @movie.simple_plot %>
+</p>
+
+<p>
+  <strong>Plot:</strong>
+  <%= @movie.plot %>
+</p>
+
+<p>
+  <strong>Url imdb:</strong>
+  <%= @movie.url_imdb %>
+</p>
+
+<p>
+  <strong>Url poster:</strong>
+  <%= @movie.url_poster %>
+</p>
+
+<p>
+  <strong>Directors:</strong>
+  <%= render partial: "member", collection: @movie.directors %>
+</p>
+
+<p>
+  <strong>Writers:</strong>
+  <%= render partial: "member", collection: @movie.writers %>
+</p>
+
+<p>
+  <strong>Actors:</strong>
+  <%= render partial: "member", collection: @movie.roles %>
+</p>
+
+<%= link_to 'Edit', edit_movie_path(@movie) %> |
+<%= link_to 'Back', movies_path %>

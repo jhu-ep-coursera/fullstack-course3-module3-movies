@@ -1,0 +1,89 @@
+<%= form_for(@movie) do |f| %>
+  <% if @movie.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@movie.errors.count, "error") %> prohibited this movie from being saved:</h2>
+
+      <ul>
+      <% @movie.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label :type %><br>
+    <%= f.text_field :type %>
+  </div>
+  <div class="field">
+    <%= f.label :rated %><br>
+    <%= f.text_field :rated %>
+  </div>
+  <div class="field">
+    <%= f.label :year %><br>
+    <%= f.number_field :year %>
+  </div>
+  <div class="field">
+    <%= f.label :release_date %><br>
+    <%= f.date_select :release_date %>
+  </div>
+  <div class="field">
+    <%= f.label :runtime %><br>
+    <%= f.number_field :runtime %>
+  </div>
+  <div class="field">
+    <%= f.label :votes %><br>
+    <%= f.number_field :votes %>
+  </div>
+  <div class="field">
+    <%= f.label :countries %><br>
+    <%= f.text_field :countries %>
+  </div>
+  <div class="field">
+    <%= f.label :languages %><br>
+    <%= f.text_field :languages %>
+  </div>
+  <div class="field">
+    <%= f.label :genres %><br>
+    <%= f.text_field :genres %>
+  </div>
+  <div class="field">
+    <%= f.label :filming_locations %><br>
+    <%= f.text_field :filming_locations %>
+  </div>
+  <div class="field">
+    <%= f.label :metascore %><br>
+    <%= f.text_field :metascore %>
+  </div>
+  <div class="field">
+    <%= f.label :simple_plot %><br>
+    <%= f.text_area :simple_plot %>
+  </div>
+  <div class="field">
+    <%= f.label :plot %><br>
+    <%= f.text_area :plot %>
+  </div>
+  <div class="field">
+    <%= f.label :url_imdb %><br>
+    <%= f.text_field :url_imdb %>
+  </div>
+  <div class="field">
+    <%= f.label :url_poster %><br>
+    <%= f.text_field :url_poster %>
+  </div>
+  <div class="field">
+    <%= f.label :directors %><br>
+    <%= f.text_field :directors %>
+  </div>
+  <div class="field">
+    <%= f.label :actors %><br>
+    <%= f.text_field :actors %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
