@@ -51,3 +51,5 @@ gem 'mongoid', '~> 5.0.0'
 
 #used during raw seed to get geolocation info
 gem 'httparty'
+#used during rake db:seed
+gem 'json_pure'
